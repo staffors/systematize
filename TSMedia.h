@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "TSConstants.h"
 

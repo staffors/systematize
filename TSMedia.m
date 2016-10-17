@@ -314,7 +314,7 @@
 	if (! [fileManager fileExistsAtPath:destinationPath isDirectory:&isDir] && isDir)
 		{
 		//NSLog(@"creating destination directory: %@", destinationPath);
-		[fileManager createDirectoryAtPath:destinationPath attributes:nil];
+            [fileManager createDirectoryAtPath:destinationPath withIntermediateDirectories:TRUE attributes:nil error:nil];
 		}
 	else if (!isDir)
 		{
@@ -573,7 +573,7 @@
 		}
 	else
 		{
-		return [NSString stringWithFormat:@"%d bytes", size];
+		return [NSString stringWithFormat:@"%lu bytes", size];
 		}
 	}
 

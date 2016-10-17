@@ -71,7 +71,7 @@
 		}
 	//NSLog(@" - found %d matches", [indexesToDelete count]);
 	// iterate down through the indexesToDelete, removing them as we go
-	int index = [indexesToDelete lastIndex];
+	unsigned long index = [indexesToDelete lastIndex];
 	while (index != NSNotFound)
 		{
 		[mediaList removeObjectAtIndex:index];
@@ -85,7 +85,7 @@
 
 
 
-- (unsigned)size;
+- (unsigned long)size;
 	{
 	return [mediaList count];
 	}

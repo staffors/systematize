@@ -152,8 +152,8 @@
 		
     /**** BEGIN Drawing Photos ****/
 	NSRange rangeToDraw = [self photoIndexRangeForRect:rect]; // adjusts for photoCount if the rect goes outside my range
-    unsigned index;
-    unsigned lastIndex = rangeToDraw.location + rangeToDraw.length;
+    unsigned long index;
+    unsigned long lastIndex = rangeToDraw.location + rangeToDraw.length;
     for (index = rangeToDraw.location; index <= lastIndex; index++) {
         
         // Get the image at the current index - a red square anywhere in the view means it asked for an image, but got nil for that index
@@ -698,8 +698,8 @@
 				if ([indexes count] == 0) {
 					[indexes addIndex:clickedIndex];
 				} else {
-					unsigned int origin = (clickedIndex < [indexes lastIndex]) ? clickedIndex :[indexes lastIndex];
-					unsigned int length = (clickedIndex < [indexes lastIndex]) ? [indexes lastIndex] - clickedIndex : clickedIndex - [indexes lastIndex];
+					unsigned long origin = (clickedIndex < [indexes lastIndex]) ? clickedIndex :[indexes lastIndex];
+					unsigned long length = (clickedIndex < [indexes lastIndex]) ? [indexes lastIndex] - clickedIndex : clickedIndex - [indexes lastIndex];
 
 					length++;
 					[indexes addIndexesInRange:NSMakeRange(origin, length)];
@@ -763,7 +763,7 @@
 			NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
 			[attributes setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 			[attributes setObject:[NSFont fontWithName:@"Helvetica" size:14] forKey:NSFontAttributeName];
-			NSAttributedString *badgeString = [[NSAttributedString alloc] initWithString:[[NSNumber numberWithInt:[[self selectionIndexes] count]] stringValue] attributes:attributes];
+			NSAttributedString *badgeString = [[NSAttributedString alloc] initWithString:[[NSNumber numberWithUnsignedLong:[[self selectionIndexes] count]] stringValue] attributes:attributes];
 			NSSize stringSize = [badgeString size];
 			int diameter = stringSize.width;
 			if (stringSize.height > diameter) diameter = stringSize.height;
@@ -804,7 +804,7 @@
             NSPasteboard *pb = [NSPasteboard pasteboardWithName:NSDragPboard];
             [pb declareTypes:types owner:delegate];
 
-			unsigned selectedIndex = [[self selectionIndexes] firstIndex];
+			unsigned long selectedIndex = [[self selectionIndexes] firstIndex];
 			while (selectedIndex != NSNotFound) {
 				unsigned j;
 				for (j = 0; j < [types count]; j++) {
@@ -1251,8 +1251,8 @@
 - (void)moveDownAndModifySelection:(id)sender
 {
 	NSIndexSet *indexes = [self selectionIndexes];
-	unsigned int destinationIndex = [indexes lastIndex] + columns;
-	unsigned int lastIndex = [self photoCount] - 1;
+	unsigned long destinationIndex = [indexes lastIndex] + columns;
+	unsigned long lastIndex = [self photoCount] - 1;
 	
 	if (([indexes count] > 0) && (destinationIndex <= lastIndex)) {
 		NSMutableIndexSet *newIndexes = [indexes mutableCopy];
@@ -1317,7 +1317,7 @@
 {
 	NSIndexSet *indexes = [self selectionIndexes];
 	if ([indexes count] > 0) {
-		unsigned int destinationIndex = ([indexes lastIndex] + columns) - ([indexes lastIndex] % columns) - 1;
+		unsigned long destinationIndex = ([indexes lastIndex] + columns) - ([indexes lastIndex] % columns) - 1;
 		if (destinationIndex >= [self photoCount]) {
 			destinationIndex = [self photoCount] - 1;
 		}
@@ -1332,7 +1332,7 @@
 {
 	NSMutableIndexSet *indexes = [[self selectionIndexes] mutableCopy];
 	if ([indexes count] > 0) {
-		unsigned int destinationIndexPlusOne = ([indexes lastIndex] + columns) - ([indexes lastIndex] % columns);
+		unsigned long destinationIndexPlusOne = ([indexes lastIndex] + columns) - ([indexes lastIndex] % columns);
 		if (destinationIndexPlusOne >= [self photoCount]) {
 			destinationIndexPlusOne = [self photoCount];
 		}
@@ -1347,7 +1347,7 @@
 {
 	NSIndexSet *indexes = [self selectionIndexes];
 	if ([indexes count] > 0) {
-		unsigned int destinationIndex = [indexes firstIndex] - ([indexes firstIndex] % columns);
+		unsigned long destinationIndex = [indexes firstIndex] - ([indexes firstIndex] % columns);
 		NSIndexSet *newIndexes = [[NSIndexSet alloc] initWithIndex:destinationIndex];
         [self setSelectionIndexes:newIndexes];
 		[self scrollRectToVisible:[self gridRectForIndex:destinationIndex]];
@@ -1359,7 +1359,7 @@
 {
 	NSMutableIndexSet *indexes = [[self selectionIndexes] mutableCopy];
 	if ([indexes count] > 0) {
-		unsigned int destinationIndex = [indexes firstIndex] - ([indexes firstIndex] % columns);
+		unsigned long destinationIndex = [indexes firstIndex] - ([indexes firstIndex] % columns);
 		[indexes addIndexesInRange:NSMakeRange(destinationIndex, ([indexes firstIndex] - destinationIndex))];
 		[self setSelectionIndexes:indexes];
 		[self scrollRectToVisible:[self gridRectForIndex:destinationIndex]];

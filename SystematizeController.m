@@ -82,8 +82,8 @@
     BOOL isDir = NO;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray* directoryContents = [fileManager directoryContentsAtPath:directoryPath];
-	int maxItems = [directoryContents count];
-	int currentItem = 0;
+	unsigned long maxItems = [directoryContents count];
+	unsigned long currentItem = 0;
 	[progressBar setDoubleValue:0.0];
 	[progressBar setMinValue:0];
 	[progressBar setMaxValue:maxItems];
@@ -91,7 +91,7 @@
     NSString *fileName;
     while (fileName = (NSString*)[e nextObject])
         {
-		[progressTextField setStringValue:[NSString stringWithFormat:@"Loading item %d of %d", currentItem, maxItems]];
+		[progressTextField setStringValue:[NSString stringWithFormat:@"Loading item %lu of %lu", currentItem, maxItems]];
 		[progressTextField displayIfNeeded];
 		[progressBar incrementBy:1];
 		[progressBar displayIfNeeded];
@@ -132,7 +132,7 @@
 //    unsigned result = [openPanel runModalForDirectory:nil file:nil types:nil];
     
 	NSAlert* alertPanel = [NSAlert alertWithMessageText:@"Proceed with processing?" defaultButton:@"Proceed" alternateButton:@"Cancel" otherButton:nil informativeTextWithFormat:@"Proceeding will cause the pictures to be renamed and reordered as specified, and will exit Systematize."];
-	unsigned result = [alertPanel runModal];
+	unsigned long result = [alertPanel runModal];
 //    if (result == NSOKButton) 
 //        {
 //        NSArray* filesToOpen = [openPanel filenames];
@@ -222,7 +222,7 @@
 	{
 	if ([selectedIndexes count] > 0)
 		{
-		unsigned index = [selectedIndexes firstIndex];
+		unsigned long index = [selectedIndexes firstIndex];
 		[self setLastUsedName:[[collection objectAtIndex:index] displayName]];
 		}
 	}
@@ -387,7 +387,7 @@
 
 - (void) renameSelectedImagesWithName:(NSString*)str;
 	{	
-	unsigned index = [selectedIndexes firstIndex];
+	unsigned long index = [selectedIndexes firstIndex];
 	while (index != NSNotFound)
 		{
 		[[collection objectAtIndex:index] setNewName:str];
@@ -433,21 +433,21 @@
 	}
 	
 	
-- (NSImage *)photoView:(MUPhotoView *)view photoAtIndex:(unsigned)index;
+- (NSImage *)photoView:(MUPhotoView *)view photoAtIndex:(unsigned long)index;
 	{
 	return [[collection objectAtIndex:index] thumbnail];
 	}
 	
 
 	
-- (NSImage *)photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned)index;
+- (NSImage *)photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned long)index;
 	{
 	return nil;
 	//return [[collection objectAtIndex:index] thumbnail];
 	}
 	
 	
-- (TSMedia *)photoView:(MUPhotoView *)view objectAtIndex:(unsigned)index;
+- (TSMedia *)photoView:(MUPhotoView *)view objectAtIndex:(unsigned long)index;
 	{
 	return [collection objectAtIndex:index];
 	}
@@ -495,7 +495,7 @@
 	}
 	
 
-- (unsigned int)photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal
+- (unsigned long)photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal
 	{
 	if (isLocal)
 		{
@@ -512,21 +512,21 @@
     return [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
 	}
 
-- (NSData *)photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned)index dataType:(NSString *)type
+- (NSData *)photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned long)index dataType:(NSString *)type
 	{
 	// HMM, how should this work?
     return nil;
 	}
 
 
-- (void)photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned)insertionIndex;
+- (void)photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned long)insertionIndex;
 	{
 	// we need to ensure that we keep the indexes straight, removing an item from the array changes all indexes greater than it
 	
 	// starting with the max index, remove them into a tmp array, adjust the insertion index if necessary
 	NSMutableArray* tmpArray = [[NSMutableArray alloc] init];
-	unsigned localInsertionIndex = insertionIndex;
-	unsigned index = [selectedPhotoIndexes lastIndex];
+	unsigned long localInsertionIndex = insertionIndex;
+	unsigned long index = [selectedPhotoIndexes lastIndex];
 	while (index != NSNotFound)
 		{
 		if (index <= localInsertionIndex)
@@ -539,7 +539,7 @@
 		}
 	
 	// now add them back at the new location
-	unsigned i;
+	unsigned long i;
 	for (i=0; i<[tmpArray count]; i++)
 		{
 		[collection insertObject:[tmpArray objectAtIndex:i] atIndex:localInsertionIndex];
@@ -550,7 +550,7 @@
 	
 
 
-- (void)photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned)index;
+- (void)photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned long)index;
 	{
     TSMedia* mediaItem = [collection objectAtIndex:index];
 	if ([mediaItem getMediaType] == ImageType)
@@ -570,7 +570,7 @@
 
 - (void)photoView:(MUPhotoView *)view didRemovePhotosAtIndexes:(NSIndexSet *)indexes;
 	{
-    unsigned index = [indexes lastIndex];
+    unsigned long index = [indexes lastIndex];
 	while (index != NSNotFound)
 		{
 		[collection removeObjectAtIndex:index];
@@ -580,7 +580,7 @@
 
 - (void) showInfoForSelectedPhotos;
 	{
-    unsigned index = [selectedIndexes firstIndex];
+    unsigned long index = [selectedIndexes firstIndex];
 	while (index != NSNotFound)
 		{
 		[self displayInfo:[collection objectAtIndex:index]];

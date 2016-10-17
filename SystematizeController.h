@@ -72,17 +72,17 @@
 
 // MUPhotoView delegate methods
 - (unsigned) photoCountForPhotoView:(MUPhotoView *)view;
-- (NSImage *) photoView:(MUPhotoView *)view photoAtIndex:(unsigned)index;
-- (NSImage *) photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned)index;
-- (TSMedia *) photoView:(MUPhotoView *)view objectAtIndex:(unsigned)index;
+- (NSImage *) photoView:(MUPhotoView *)view photoAtIndex:(unsigned long)index;
+- (NSImage *) photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned long)index;
+- (TSMedia *) photoView:(MUPhotoView *)view objectAtIndex:(unsigned long)index;
 - (NSIndexSet *) selectionIndexesForPhotoView:(MUPhotoView *)view;
 - (NSIndexSet *) photoView:(MUPhotoView *)view willSetSelectionIndexes:(NSIndexSet *)indexes;
 - (void) photoView:(MUPhotoView *)view didSetSelectionIndexes:(NSIndexSet *)indexes;
-- (unsigned int) photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal;
+- (unsigned long) photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal;
 - (NSArray *) pasteboardDragTypesForPhotoView:(MUPhotoView *)view;
-- (NSData *) photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned)index dataType:(NSString *)type;
-- (void) photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned)insertionIndex;
-- (void) photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned)index;
+- (NSData *) photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned long)index dataType:(NSString *)type;
+- (void) photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned long)insertionIndex;
+- (void) photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned long)index;
 - (NSIndexSet *) photoView:(MUPhotoView *)view willRemovePhotosAtIndexes:(NSIndexSet *)indexes;
 - (void) photoView:(MUPhotoView *)view didRemovePhotosAtIndexes:(NSIndexSet *)indexes;
 - (void) showInfoForSelectedPhotos;
