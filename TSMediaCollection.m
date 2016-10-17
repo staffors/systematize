@@ -15,7 +15,7 @@
     
 
 
-- (void)setCurrentDirectory:(NSString*)path;
+- (void)setCurrentDirectory:(NSURL*)path;
     {
 	if (rootPath)
         {
@@ -31,7 +31,7 @@
 	
 	
     
-- (NSString *)currentDirectory;
+- (NSURL *)currentDirectory;
 	{
 	return [[rootPath retain] autorelease];
 	}
@@ -42,26 +42,26 @@
     
 - (void)filterForMoviesWithThumbnailImages;
 	{
-	//NSLog(@"filterForMoviesWithThumbnailImages");
+	NSLog(@"filterForMoviesWithThumbnailImages");
 
-	NSMutableIndexSet *indexesToDelete = [[NSMutableIndexSet alloc] init];
-	int i;
+	NSMutableIndexSet *indexesToDelete = [[[NSMutableIndexSet alloc] init] autorelease];
+	NSUInteger i;
 	for (i=0; i<[mediaList count]; i++)
 		{
-		TSMedia* movie = [mediaList objectAtIndex:i];
+		TSMedia* movie = mediaList[i];
 		if ([movie isMovie])
 			{
-			int j;
+			NSUInteger j;
 			for (j=0; j<[mediaList count]; j++)
 				{
 				// if we're not looking at the same item as the movie, then see if it has the same basename
 				if (j != i)
 					{
-					TSMedia* item = [mediaList objectAtIndex:j];
+					TSMedia* item = mediaList[j];
 					if ([[movie baseName] caseInsensitiveCompare:[item baseName]] == NSOrderedSame)
 						{
 						// we found a match so remember its index and add its info to the movie item
-						//NSLog(@" - adding thumbnail from index %d for movie %d", j, i);
+						NSLog(@" - adding thumbnail from index %tu for movie %tu", j, i);
 						[movie addThumbnailInfo:item];
 						[indexesToDelete addIndex:j];
 						}
@@ -69,9 +69,9 @@
 				}
 			}
 		}
-	//NSLog(@" - found %d matches", [indexesToDelete count]);
+	NSLog(@" - found %d matches", (int) [indexesToDelete count]);
 	// iterate down through the indexesToDelete, removing them as we go
-	int index = [indexesToDelete lastIndex];
+	unsigned long index = [indexesToDelete lastIndex];
 	while (index != NSNotFound)
 		{
 		[mediaList removeObjectAtIndex:index];
@@ -85,7 +85,7 @@
 
 
 
-- (unsigned)size;
+- (unsigned long)size;
 	{
 	return [mediaList count];
 	}
@@ -97,17 +97,17 @@
 	}
 	
 	
-- (TSMedia *)objectAtIndex:(unsigned)index;
+- (TSMedia *)objectAtIndex:(unsigned long)index;
 	{
-	return [mediaList objectAtIndex:index];
+	return mediaList[index];
 	}
 
-- (void)removeObjectAtIndex:(unsigned)index;
+- (void)removeObjectAtIndex:(unsigned long)index;
 	{
 	[mediaList removeObjectAtIndex:index];
 	}
 	
-- (void)insertObject:(TSMedia*)mediaItem atIndex:(unsigned)index;
+- (void)insertObject:(TSMedia*)mediaItem atIndex:(unsigned long)index;
 	{
 	[mediaList insertObject:mediaItem atIndex:index];
 	}
