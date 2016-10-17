@@ -136,9 +136,10 @@
 	[NSBezierPath fillRect:rect];
 	
     // get the number of photos
-    unsigned photoCount = [self photoCount];
-    if (0 == photoCount)
+    unsigned long photoCount = [self photoCount];
+    if (0 == photoCount) {
         return;
+    }
 
     // update internal grid size, adjust height based on the new grid size
     // because I may not find out that the photos array has changed until I draw and read the photos from the delegate, this call has to stay here
@@ -678,9 +679,9 @@
 	mouseDownPoint = [self convertPoint:[event locationInWindow] fromView:nil];
 	mouseCurrentPoint = mouseDownPoint;
 
-	unsigned				clickedIndex = [self photoIndexForPoint:mouseDownPoint];
+    unsigned long			clickedIndex = [self photoIndexForPoint:mouseDownPoint];
 	NSRect					photoRect = [self photoRectForIndex:clickedIndex];
-	unsigned int			flags = [event modifierFlags];
+	unsigned     			flags = [event modifierFlags];
 	NSMutableIndexSet*		indexes = [[self selectionIndexes] mutableCopy];
 	BOOL					imageHit = NSPointInRect(mouseDownPoint, photoRect);
 
@@ -737,7 +738,7 @@
         
 	} else if (potentialDragDrop && (nil != delegate)) {
         // create a drag image
-		unsigned clickedIndex = [self photoIndexForPoint:mouseDownPoint];
+		unsigned long clickedIndex = [self photoIndexForPoint:mouseDownPoint];
         NSImage *clickedImage = [self photoAtIndex:clickedIndex];
         BOOL flipped = [clickedImage isFlipped];
         [clickedImage setFlipped:NO];
@@ -853,10 +854,10 @@
             
         NSRect selectionRect = NSMakeRect(minX,minY,maxX-minX,maxY-minY);
 		
-		unsigned minIndex = [self photoIndexForPoint:NSMakePoint(minX, minY)];
-		unsigned xRun = [self photoIndexForPoint:NSMakePoint(maxX, minY)] - minIndex + 1;
-		unsigned yRun = [self photoIndexForPoint:NSMakePoint(minX, maxY)] - minIndex + 1;
-		unsigned selectedRows = (yRun / columns);
+		unsigned long minIndex = [self photoIndexForPoint:NSMakePoint(minX, minY)];
+		unsigned long xRun = [self photoIndexForPoint:NSMakePoint(maxX, minY)] - minIndex + 1;
+		unsigned long yRun = [self photoIndexForPoint:NSMakePoint(minX, maxY)] - minIndex + 1;
+		unsigned long selectedRows = (yRun / columns);
         
         // Save the current selection (if any), then populate the drag indexes
 		// this allows us to shift band select to add to the current selection.
@@ -866,8 +867,8 @@
         // add indexes in the drag rectangle
         unsigned i;
 		for (i = 0; i <= selectedRows; i++) {
-			unsigned rowStartIndex = (i * columns) + minIndex;
-			unsigned j;
+			unsigned long rowStartIndex = (i * columns) + minIndex;
+			unsigned long j;
             for (j = rowStartIndex; j < (rowStartIndex + xRun); j++) {
                 if (NSIntersectsRect([self photoRectForIndex:j],selectionRect))
                     [dragSelectedPhotoIndexes addIndex:j];
@@ -901,7 +902,7 @@
 	if ([event clickCount] == 2) {
 		// There could be more than one selected photo.  In that case, call the delegates doubleClickOnPhotoAtIndex routine for
 		// each selected photo.
-		unsigned selectedIndex = [[self selectionIndexes] firstIndex];
+		unsigned long selectedIndex = [[self selectionIndexes] firstIndex];
 		while (selectedIndex != NSNotFound) {
 			[delegate photoView:self doubleClickOnPhotoAtIndex:selectedIndex];
 			selectedIndex = [[self selectionIndexes] indexGreaterThanIndex:selectedIndex];
@@ -922,7 +923,7 @@
 	[self setNeedsDisplayInRect:[self visibleRect]];
 }
 
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal
+- (unsigned long)draggingSourceOperationMaskForLocal:(BOOL)isLocal
 {
 	if (nil != delegate)
         return [delegate photoView:self draggingSourceOperationMaskForLocal:isLocal];
@@ -972,7 +973,7 @@
 	if ((NSDragOperationPrivate & [sender draggingSourceOperationMask]) == NSDragOperationPrivate)
 		{
 		NSPoint currentMousePoint = [self convertPoint:[sender draggingLocation] fromView:nil];
-		unsigned oldIndex = insertionRectIndex;
+		unsigned long oldIndex = insertionRectIndex;
 		insertionRectIndex = [self photoIndexForPoint:currentMousePoint];
 		NSRect currentRect = [self gridRectForIndex:insertionRectIndex];
 		if (currentMousePoint.x >= (currentRect.origin.x + (currentRect.size.width / 2)))
@@ -1002,7 +1003,7 @@
 -(void) draggingExited:(id <NSDraggingInfo>)sender;
 	{
 	//NSLog(@"dragging exited: index = %u", insertionRectIndex);
-	unsigned lastRectIndex = insertionRectIndex;
+	unsigned long lastRectIndex = insertionRectIndex;
 	insertionRectIndex = -1;
 	[self setNeedsDisplayInRect:[self gridRectForIndex:lastRectIndex]];		
 	}
@@ -1083,7 +1084,7 @@
 		keyChar = [eventKey characterAtIndex:0];
 		if (keyChar == ' ')
 			{
-			unsigned selectedIndex = [[self selectionIndexes] firstIndex];
+			unsigned long selectedIndex = [[self selectionIndexes] firstIndex];
 			while (selectedIndex != NSNotFound)
 				{
 				[delegate photoView:self doubleClickOnPhotoAtIndex:selectedIndex];
@@ -1224,8 +1225,8 @@
 {
 	NSIndexSet*					indexes = [self selectionIndexes];
 	NSMutableIndexSet*			newIndexes = [[NSMutableIndexSet alloc] init];
-	unsigned int				destinationIndex = [indexes lastIndex] + columns;
-	unsigned int				lastIndex = [self photoCount] - 1;
+    unsigned long				destinationIndex = [indexes lastIndex] + columns;
+	unsigned long				lastIndex = [self photoCount] - 1;
 
 	if (([indexes count] > 0) && (destinationIndex <= lastIndex))
 	{
@@ -1519,7 +1520,7 @@
 	{
 	//NSLog(@"renamePhotos");
 	[self updateGridAndFrame];
-	unsigned index = [selectedIndexes firstIndex];
+	unsigned long index = [selectedIndexes firstIndex];
 	NSString* displayName = [[[delegate photoView:self objectAtIndex:index] displayName] retain];
 	[editorTextField setStringValue:displayName];
 	[editorTextField selectText:self];
@@ -1582,7 +1583,7 @@
 
 	mouseEventLocation = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 
-	unsigned clickedIndex = [self photoIndexForPoint:mouseEventLocation];
+	unsigned long clickedIndex = [self photoIndexForPoint:mouseEventLocation];
 	NSRect photoRect = [self photoRectForIndex:clickedIndex];
 
 	return(NSPointInRect(mouseEventLocation, photoRect));
@@ -1600,7 +1601,7 @@
 
 	mouseEventLocation = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 
-	unsigned clickedIndex = [self photoIndexForPoint:mouseEventLocation];
+	unsigned long clickedIndex = [self photoIndexForPoint:mouseEventLocation];
 	NSRect photoRect = [self photoRectForIndex:clickedIndex];
 
 	return NSPointInRect(mouseEventLocation, photoRect);
@@ -1627,7 +1628,7 @@
     /**** BEGIN Dimension calculations and adjustments ****/
     
     // get the number of photos
-    unsigned photoCount = [self photoCount];
+    unsigned long photoCount = [self photoCount];
     
     // calculate the base grid size
     gridSize.height = [self photoSize] + [self photoVerticalSpacing];
@@ -1676,7 +1677,7 @@
 }
 
 // will fetch from the internal array if not nil, from delegate otherwise
-- (unsigned)photoCount
+- (unsigned long)photoCount
 {
     if (nil != [self photosArray])
         return [[self photosArray] count];
@@ -1686,7 +1687,7 @@
         return 0;
 }
 
-- (NSImage *)photoAtIndex:(unsigned)index
+- (NSImage *)photoAtIndex:(unsigned long)index
 {
     if ((nil != [self photosArray]) && (index < [self photoCount]))
         return [[self photosArray] objectAtIndex:index];
@@ -1697,7 +1698,7 @@
 }
 
 
-- (NSImage *)fastPhotoAtIndex:(unsigned)index
+- (NSImage *)fastPhotoAtIndex:(unsigned long)index
 {
     if ((nil != [self photosArray]) && (index < [self photoCount]))
         return [[self photosArray] objectAtIndex:index];
@@ -1708,7 +1709,7 @@
 }
 
 
-- (TSMedia *)mediaAtIndex:(unsigned)index
+- (TSMedia *)mediaAtIndex:(unsigned long)index
 {
     if ((nil != delegate) && (index < [self photoCount]))
         return [delegate photoView:self objectAtIndex:index];
@@ -1765,7 +1766,7 @@
     return image;
 }
 
-- (unsigned)photoIndexForPoint:(NSPoint)point
+- (unsigned long)photoIndexForPoint:(NSPoint)point
 {
 	unsigned column = point.x / gridSize.width;
 	unsigned row = point.y / gridSize.height;
@@ -1775,8 +1776,8 @@
 
 - (NSRange)photoIndexRangeForRect:(NSRect)rect
 {
-    unsigned start = [self photoIndexForPoint:rect.origin];
-	unsigned finish = [self photoIndexForPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
+    unsigned long start = [self photoIndexForPoint:rect.origin];
+	unsigned long finish = [self photoIndexForPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
 	
     if (finish >= [self photoCount])
         finish = [self photoCount] - 1;
@@ -1785,10 +1786,10 @@
     
 }
 
-- (NSRect)gridRectForIndex:(unsigned)index
+- (NSRect)gridRectForIndex:(unsigned long)index
 {
-	unsigned row = index / columns;
-	unsigned column = index % columns;
+	unsigned long row = index / columns;
+	unsigned long column = index % columns;
 	float x = column * gridSize.width;
 	float y = row * gridSize.height;
 	
@@ -1803,7 +1804,7 @@
     return NSMakeRect(x, y, size.width, size.height);
 }
 
-- (NSRect)photoRectForIndex:(unsigned)index
+- (NSRect)photoRectForIndex:(unsigned long)index
 {
 	if ([self photoCount] == 0)
         return NSZeroRect;
@@ -1839,7 +1840,7 @@
 
 
 // selection
-- (BOOL)isPhotoSelectedAtIndex:(unsigned)index;
+- (BOOL)isPhotoSelectedAtIndex:(unsigned long)index;
 {
 	//NSLog(@"is photo selected at index %u, %@, %@", index, dragSelectedPhotoIndexes, selectedPhotoIndexes);
 	//NSLog(@"isPhotoSelectedAtIndex: %u with drag count = %u, and delegate thinks selected = %u", index, [dragSelectedPhotoIndexes count], [[delegate selectionIndexesForPhotoView:self] containsIndex:index]);
@@ -1884,7 +1885,7 @@
 	{
 		// We have to iterate through the photos to figure out which ones the delegate thinks are selected - that's the only way to know the old selection when in delegate mode
 		oldSelection = [[NSMutableIndexSet alloc] init];
-		unsigned i, count = [self photoCount];
+		unsigned long i, count = [self photoCount];
 		for( i = 0; i < count; i += 1 )
 		{
 			if ([self isPhotoSelectedAtIndex:i])
@@ -1988,7 +1989,7 @@
 	if (oldSelection && newSelection)
 	{
 		// First, see which of the old are different than the new
-		unsigned index = [newSelection firstIndex];
+		unsigned long index = [newSelection firstIndex];
 		
 		while (index != NSNotFound)
 		{

@@ -70,8 +70,8 @@
     
 	
     NSSize gridSize;
-    unsigned columns;
-    unsigned rows;
+    unsigned long columns;
+    unsigned long rows;
     
     BOOL mouseDown;
 	BOOL potentialDragDrop;
@@ -82,7 +82,7 @@
     NSDate *photoResizeTime;
     BOOL isDonePhotoResizing;
 	
-	unsigned insertionRectIndex;
+	unsigned long insertionRectIndex;
 }
 
 
@@ -271,24 +271,24 @@
 - (void)updateGridAndFrame;
 
 // will fetch from the internal array if not nil, from delegate otherwise
-- (unsigned)photoCount;
-- (NSImage *)photoAtIndex:(unsigned)index;
-- (NSImage *)fastPhotoAtIndex:(unsigned)index;
-- (TSMedia *)mediaAtIndex:(unsigned)index;
+- (unsigned long)photoCount;
+- (NSImage *)photoAtIndex:(unsigned long)index;
+- (NSImage *)fastPhotoAtIndex:(unsigned long)index;
+- (TSMedia *)mediaAtIndex:(unsigned long)index;
 - (void)updatePhotoResizing;
 
 // placement and hit detection
 - (NSSize)scaledPhotoSizeForSize:(NSSize)size;
 - (NSImage *)scalePhoto:(NSImage *)image;
-- (unsigned)photoIndexForPoint:(NSPoint)point;
+- (unsigned long)photoIndexForPoint:(NSPoint)point;
 - (NSRange)photoIndexRangeForRect:(NSRect)rect;
-- (NSRect)gridRectForIndex:(unsigned)index;
+- (NSRect)gridRectForIndex:(unsigned long)index;
 - (NSRect)rectCenteredInRect:(NSRect)rect withSize:(NSSize)size;
-- (NSRect)photoRectForIndex:(unsigned)index;
+- (NSRect)photoRectForIndex:(unsigned long)index;
 - (NSRect)typeRectOfSize:(NSSize)size inPhotoRect:(NSRect)rect;
 
 // selection
-- (BOOL)isPhotoSelectedAtIndex:(unsigned)index;
+- (BOOL)isPhotoSelectedAtIndex:(unsigned long)index;
 - (NSIndexSet *)selectionIndexes;
 - (void)setSelectionIndexes:(NSIndexSet *)indexes;
 - (NSBezierPath *)shadowBoxPathForRect:(NSRect)rect;

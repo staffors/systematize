@@ -54,9 +54,9 @@
     [openPanel setCanChooseDirectories:YES];
     
 	NSString* picturesDirectoryPath = [@"~/Pictures/Pictures" stringByExpandingTildeInPath];
-    unsigned result = [openPanel runModalForDirectory:picturesDirectoryPath file:nil types:nil];
+    unsigned long result = [openPanel runModalForDirectory:picturesDirectoryPath file:nil types:nil];
     
-    if (result == NSOKButton) 
+    if (result == NSModalResponseOK)
         {
         NSArray* filesToOpen = [openPanel filenames];
         NSString* path = [[filesToOpen objectAtIndex:0] retain];
@@ -140,15 +140,15 @@
 
 	if (result == NSAlertDefaultReturn)
 		{
-		int maxItems = [collection size];
-		int i;
+		unsigned long maxItems = [collection size];
+		unsigned long i;
 		[progressBar setDoubleValue:0.0];
 		[progressBar setMinValue:0];
 		[progressBar setMaxValue:maxItems];
 		[progressBarPanel makeKeyAndOrderFront:self];
 		for (i=0; i<maxItems; i++)
 			{
-			[progressTextField setStringValue:[NSString stringWithFormat:@"Processing item %d of %d", i, maxItems]];
+			[progressTextField setStringValue:[NSString stringWithFormat:@"Processing item %lu of %lu", i, maxItems]];
 			[progressTextField displayIfNeeded];
 			[progressBar incrementBy:1];
 			[progressBar displayIfNeeded];
@@ -157,7 +157,7 @@
 			}
 		
 		[progressBarPanel orderOut:nil];
-		NSAlert* confirmPanel = [NSAlert alertWithMessageText:@"Finished Processing" defaultButton:@"Quit" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Renamed %d images to directory:\n%@", [collection size], [collection currentDirectory]]; 
+		NSAlert* confirmPanel = [NSAlert alertWithMessageText:@"Finished Processing" defaultButton:@"Quit" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Renamed %lu images to directory:\n%@", [collection size], [collection currentDirectory]];
 		[confirmPanel runModal];
 		[NSApp terminate:self];
 		}
@@ -427,7 +427,7 @@
 //
 // MUPhotoView delegate methods
 //
-- (unsigned)photoCountForPhotoView:(MUPhotoView *)view;
+- (unsigned long)photoCountForPhotoView:(MUPhotoView *)view;
 	{
 	return [collection size];
 	}

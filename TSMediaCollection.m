@@ -97,17 +97,17 @@
 	}
 	
 	
-- (TSMedia *)objectAtIndex:(unsigned)index;
+- (TSMedia *)objectAtIndex:(unsigned long)index;
 	{
 	return [mediaList objectAtIndex:index];
 	}
 
-- (void)removeObjectAtIndex:(unsigned)index;
+- (void)removeObjectAtIndex:(unsigned long)index;
 	{
 	[mediaList removeObjectAtIndex:index];
 	}
 	
-- (void)insertObject:(TSMedia*)mediaItem atIndex:(unsigned)index;
+- (void)insertObject:(TSMedia*)mediaItem atIndex:(unsigned long)index;
 	{
 	[mediaList insertObject:mediaItem atIndex:index];
 	}

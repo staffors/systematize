@@ -15,11 +15,11 @@
 - (NSString *)currentDirectory;
 - (void)filterForMoviesWithThumbnailImages;
 
-- (unsigned)size;
+- (unsigned long)size;
 - (void)addObject:(TSMedia*)item;
-- (TSMedia *)objectAtIndex:(unsigned)index;
-- (void)removeObjectAtIndex:(unsigned)index;
-- (void)insertObject:(TSMedia*)mediaItem atIndex:(unsigned)index;
+- (TSMedia *)objectAtIndex:(unsigned long)index;
+- (void)removeObjectAtIndex:(unsigned long)index;
+- (void)insertObject:(TSMedia*)mediaItem atIndex:(unsigned long)index;
 - (void)sortByTime;
 - (void)sortByName;
 

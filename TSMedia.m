@@ -488,7 +488,7 @@
     
 -(NSString*) baseName;
 	{
-	int extLength = [[self extension] length] + 1;
+	unsigned long extLength = [[self extension] length] + 1;
 	return [name substringToIndex:[name length]-extLength];
 	}
 	
