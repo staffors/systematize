@@ -180,12 +180,8 @@
         }
         
         
-        // set it to draw correctly in a flipped view (will restore it after drawing)
-        BOOL isFlipped = [photo isFlipped];
-        [photo setFlipped:YES];
-        
         // scale it to the appropriate size, this method should automatically set high quality if necessary
-        photo = [self scalePhoto:photo];
+        photo = [self scalePhoto:photo toRect:rect];
         
         // get all the appropriate positioning information
         NSRect gridRect = [self centerScanRect:[self gridRectForIndex:index]];
@@ -211,9 +207,6 @@
         // draw the current photo
         NSRect imageRect = NSMakeRect(0, 0, [photo size].width, [photo size].height);
         [photo drawInRect:photoRect fromRect:imageRect operation:NSCompositeCopy fraction:1.0];
-        
-        // restore the photo's flipped status
-        [photo setFlipped:isFlipped];
         
         // kBorderStyleShadow - remove the shadow after drawing the image
         [noShadow set];
@@ -252,7 +245,6 @@
 		NSImage* typeBadge = [[self mediaAtIndex:index] typeBadge];
 		if (typeBadge)
 			{
-			[typeBadge setFlipped:YES];
 			NSRect typeBadgeRect = NSMakeRect(0, 0, [typeBadge size].width, [typeBadge size].height);
 			[typeBadge drawInRect:[self typeRectOfSize:[typeBadge size] inPhotoRect:photoRect] fromRect:typeBadgeRect operation:NSCompositeCopy fraction:1.0];
 			}
@@ -498,9 +490,9 @@
         
         // adjust the shadow box selection color based on the background color. values closer to white use black and vice versa
         NSColor *newShadowBoxColor;
-        float whiteValue = 0.0;
+        double whiteValue = 0.0;
         if ([backgroundColor numberOfComponents] >= 3) {
-            float red, green, blue;
+            double red, green, blue;
             [backgroundColor getRed:&red green:&green blue:&blue alpha:NULL];
             whiteValue = (red + green + blue) / 3;
         } else if ([backgroundColor numberOfComponents] >= 1) {
@@ -744,8 +736,6 @@
         // create a drag image
 		unsigned long clickedIndex = [self photoIndexForPoint:mouseDownPoint];
         NSImage *clickedImage = [self photoAtIndex:clickedIndex];
-        BOOL flipped = [clickedImage isFlipped];
-        [clickedImage setFlipped:NO];
         NSSize scaledSize = [self scaledPhotoSizeForSize:[clickedImage size]];
 		if (nil == clickedImage) { // creates a red image, which should let the user/developer know something is wrong
             clickedImage = [[[NSImage alloc] initWithSize:NSMakeSize(photoSize,photoSize)] autorelease];
@@ -761,8 +751,6 @@
 		[clickedImage drawInRect:NSMakeRect(0,0,scaledSize.width,scaledSize.height) fromRect:NSMakeRect(0,0,[clickedImage size].width,[clickedImage size].height)  operation:NSCompositeCopy fraction:0.5];
 		[dragImage unlockFocus];
         
-        [clickedImage setFlipped:flipped];
-
 		// if there's more than one image, put a badge on the photo
 		if ([[self selectionIndexes] count] > 1) {
 			NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
@@ -814,7 +802,7 @@
 				unsigned j;
 				for (j = 0; j < [types count]; j++) {
 					NSString *type = [types objectAtIndex:j];
-					NSData *data = [delegate photoView:self pasteboardDataForPhotoAtIndex:selectedIndex dataType:type];
+					NSData *data = [delegate photoView:self pasteboardDataForPhotoAtIndex:(unsigned int)selectedIndex dataType:type];
 					if (nil != data) {
 						[pb setData:data forType:type];
 					}
@@ -908,7 +896,7 @@
 		// each selected photo.
 		unsigned long selectedIndex = [[self selectionIndexes] firstIndex];
 		while (selectedIndex != NSNotFound) {
-			[delegate photoView:self doubleClickOnPhotoAtIndex:selectedIndex];
+			[delegate photoView:self doubleClickOnPhotoAtIndex:(unsigned int)selectedIndex];
 			selectedIndex = [[self selectionIndexes] indexGreaterThanIndex:selectedIndex];
 		}
 	} else if (0 < [dragSelectedPhotoIndexes count]) { 
@@ -927,7 +915,7 @@
 	[self setNeedsDisplayInRect:[self visibleRect]];
 }
 
-- (unsigned long)draggingSourceOperationMaskForLocal:(BOOL)isLocal
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal
 {
 	if (nil != delegate)
         return [delegate photoView:self draggingSourceOperationMaskForLocal:isLocal];
@@ -1034,7 +1022,7 @@
 	//NSLog(@"perform drag operation: index = %u", insertionRectIndex);
 	if (nil != delegate)
 		{
-		[delegate photoView:self didDragSelection:[self selectionIndexes] toIndex:insertionRectIndex];
+		[delegate photoView:self didDragSelection:[self selectionIndexes] toIndex:(unsigned int)insertionRectIndex];
 		}
 	return YES;
 	}
@@ -1088,11 +1076,11 @@
 		keyChar = [eventKey characterAtIndex:0];
 		if (keyChar == ' ')
 			{
-			unsigned long selectedIndex = [[self selectionIndexes] firstIndex];
+			unsigned int selectedIndex = (unsigned int)[[self selectionIndexes] firstIndex];
 			while (selectedIndex != NSNotFound)
 				{
 				[delegate photoView:self doubleClickOnPhotoAtIndex:selectedIndex];
-				selectedIndex = [[self selectionIndexes] indexGreaterThanIndex:selectedIndex];
+				selectedIndex = (unsigned int)[[self selectionIndexes] indexGreaterThanIndex:selectedIndex];
 				}
 			return;
 			}
@@ -1525,14 +1513,14 @@
 	//NSLog(@"renamePhotos");
 	[self updateGridAndFrame];
 	unsigned long index = [selectedIndexes firstIndex];
-	NSString* displayName = [[[delegate photoView:self objectAtIndex:index] displayName] retain];
+	NSString* displayName = [[[delegate photoView:self objectAtIndex:(unsigned int)index] displayName] retain];
 	[editorTextField setStringValue:displayName];
 	[editorTextField selectText:self];
 	[self addSubview:editorTextField];
 	NSRect gridRect = [self gridRectForIndex:index];
 	//NSLog(@"grid rect = %f %f %f %f", gridRect.origin.x, gridRect.origin.y, gridRect.size.width, gridRect.size.height);
 	NSImage *photo = [self photoAtIndex:index];
-	photo = [self scalePhoto:photo];
+    photo = [self scalePhoto:photo toRect:gridRect];
 	NSSize scaledSize = [self scaledPhotoSizeForSize:[photo size]];
 	NSRect photoRect = [self rectCenteredInRect:gridRect withSize:scaledSize];
     photoRect = [self centerScanRect:photoRect];
@@ -1696,7 +1684,7 @@
     if ((nil != [self photosArray]) && (index < [self photoCount]))
         return [[self photosArray] objectAtIndex:index];
     else if ((nil != delegate) && (index < [self photoCount]))
-        return [delegate photoView:self photoAtIndex:index];
+        return [delegate photoView:self photoAtIndex:(unsigned int)index];
     else
         return nil;
 }
@@ -1707,7 +1695,7 @@
     if ((nil != [self photosArray]) && (index < [self photoCount]))
         return [[self photosArray] objectAtIndex:index];
     else if ((nil != delegate) && (index < [self photoCount]))
-        return [delegate photoView:self fastPhotoAtIndex:index];
+        return [delegate photoView:self fastPhotoAtIndex:(unsigned int)index];
     else
         return nil;
 }
@@ -1716,7 +1704,7 @@
 - (TSMedia *)mediaAtIndex:(unsigned long)index
 {
     if ((nil != delegate) && (index < [self photoCount]))
-        return [delegate photoView:self objectAtIndex:index];
+        return [delegate photoView:self objectAtIndex:(unsigned int)index];
     else
         return nil;
 }
@@ -1755,16 +1743,15 @@
     return scaledSize;
 }
 
-- (NSImage *)scalePhoto:(NSImage *)image
+- (NSImage *)scalePhoto:(NSImage *)image toRect:(NSRect)rect
 {
     // calculate the new image size based on the scale
     NSSize newSize;
-    NSImageRep *bestRep = [image bestRepresentationForDevice:nil];
+    NSImageRep *bestRep = [image bestRepresentationForRect:rect context:nil hints: nil];
     newSize.width = [bestRep pixelsWide];
     newSize.height = [bestRep pixelsHigh];
     
     // resize the image
-    [image setScalesWhenResized:YES];
     [image setSize:newSize];
     
     return image;
@@ -1822,7 +1809,7 @@
         return NSZeroRect;
     
     // scale to the current photoSize
-    photo = [self scalePhoto:photo];
+    photo = [self scalePhoto:photo toRect:gridRect];
     
     // scale the dimensions
     NSSize scaledSize = [self scaledPhotoSizeForSize:[photo size]];
@@ -1882,7 +1869,7 @@
 	// Set the new selection, but save the old selection so we know exactly what to redraw
     if (nil != [self selectedPhotoIndexes])
     {
-    	oldSelection = [[self selectedPhotoIndexes] retain];
+    	oldSelection = (NSMutableIndexSet *)[[self selectedPhotoIndexes] retain];
 		[self setSelectedPhotoIndexes:indexes];
     } 
 	else if (nil != delegate)
@@ -1963,8 +1950,7 @@
 
 - (NSImage *)scaleImage:(NSImage *)image toSize:(float)size
 {
-    NSImageRep *fullSizePhotoRep = [[self scalePhoto:image] bestRepresentationForDevice:nil];
-
+    NSImageRep* fullSizePhotoRep = [[image representations] objectAtIndex:0];
     float longSide = [fullSizePhotoRep pixelsWide];
     if (longSide < [fullSizePhotoRep pixelsHigh])
         longSide = [fullSizePhotoRep pixelsHigh];
@@ -1976,7 +1962,6 @@
     scaledSize.height = [fullSizePhotoRep pixelsHigh] * scale;
         
     NSImage *scaledPhoto = [[NSImage alloc] initWithSize:scaledSize];
-    [scaledPhoto setFlipped:YES];
     [scaledPhoto lockFocus];
     [fullSizePhotoRep drawInRect:NSMakeRect(0.0, 0.0, scaledSize.width, scaledSize.height)];
     [scaledPhoto unlockFocus];

@@ -16,7 +16,7 @@
 	IBOutlet NSView* swapView;
 	IBOutlet NSView* thumbnailView;
 	IBOutlet NSImageView* imageView;
-	IBOutlet AVPlayer* movieView;
+	IBOutlet AVPlayerView* movieView;
 
 	IBOutlet NSTextField* selectedImagesLabel;
 	IBOutlet NSTextField* creationDateLabel;
@@ -73,7 +73,7 @@
 
 
 // MUPhotoView delegate methods
-- (unsigned) photoCountForPhotoView:(MUPhotoView *)view;
+- (unsigned long) photoCountForPhotoView:(MUPhotoView *)view;
 - (NSImage *) photoView:(MUPhotoView *)view photoAtIndex:(unsigned long)index;
 - (NSImage *) photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned long)index;
 - (TSMedia *) photoView:(MUPhotoView *)view objectAtIndex:(unsigned long)index;

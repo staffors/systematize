@@ -23,7 +23,11 @@
 	[imageView setAutoresizesSubviews:YES];
 	[imageView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
 	[imageView setFrameOrigin:NSMakePoint(0.0, 0.0)];
-	
+
+    [movieView setAutoresizesSubviews:YES];
+    [movieView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
+    [movieView setFrameOrigin:NSMakePoint(0.0, 0.0)];
+       
 	[photoSizeSlider bind:@"value" toObject:photoView withKeyPath:@"photoSize" options:nil];
 	[photoView setUseShadowSelection:YES];
 	[photoView setUseOutlineBorder:NO];
@@ -339,7 +343,7 @@
         [swapView addSubview:movieView];
         }
     currentDisplayMode = MovieType;
-    [movieView setMovie:[item movie]];
+    [movieView setPlayer:[AVPlayer playerWithPlayerItem:[AVPlayerItem playerItemWithAsset:[item movie]]]];
 	[movieView setNextResponder:self];
 	}
 

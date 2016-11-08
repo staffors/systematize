@@ -279,7 +279,7 @@
 
 // placement and hit detection
 - (NSSize)scaledPhotoSizeForSize:(NSSize)size;
-- (NSImage *)scalePhoto:(NSImage *)image;
+- (NSImage *)scalePhoto:(NSImage *)image toRect:(NSRect)rect;
 - (unsigned long)photoIndexForPoint:(NSPoint)point;
 - (NSRange)photoIndexRangeForRect:(NSRect)rect;
 - (NSRect)gridRectForIndex:(unsigned long)index;
