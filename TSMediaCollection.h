@@ -4,15 +4,15 @@
 
 @interface TSMediaCollection : NSObject 
     {
-    NSString* rootPath;
+    NSURL* rootPath;
     NSMutableArray* mediaList;
 	NSMutableArray* imageList;
 	NSMutableArray* fastImageList;
     }
 
 
-- (void)setCurrentDirectory:(NSString*)name;
-- (NSString *)currentDirectory;
+- (void)setCurrentDirectory:(NSURL*)path;
+- (NSURL *)currentDirectory;
 - (void)filterForMoviesWithThumbnailImages;
 
 - (unsigned long)size;

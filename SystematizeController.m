@@ -24,11 +24,6 @@
 	[imageView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
 	[imageView setFrameOrigin:NSMakePoint(0.0, 0.0)];
 	
-	[movieView setAutoresizesSubviews:YES];
-	[movieView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
-	[movieView setPreservesAspectRatio:YES];
-	[movieView setFrameOrigin:NSMakePoint(0.0, 0.0)];
-
 	[photoSizeSlider bind:@"value" toObject:photoView withKeyPath:@"photoSize" options:nil];
 	[photoView setUseShadowSelection:YES];
 	[photoView setUseOutlineBorder:NO];
@@ -52,59 +47,63 @@
     [openPanel setAllowsMultipleSelection:NO];
     [openPanel setCanChooseFiles:NO];
     [openPanel setCanChooseDirectories:YES];
+    NSString* picturesDirectoryPath = [@"~/Pictures/Pictures" stringByExpandingTildeInPath];
+    [openPanel setDirectoryURL:[NSURL fileURLWithPath:picturesDirectoryPath]];
     
-	NSString* picturesDirectoryPath = [@"~/Pictures/Pictures" stringByExpandingTildeInPath];
-    unsigned long result = [openPanel runModalForDirectory:picturesDirectoryPath file:nil types:nil];
+    unsigned long result = [openPanel runModal];
     
-    if (result == NSModalResponseOK)
+    if (result == NSFileHandlingPanelOKButton)
         {
-        NSArray* filesToOpen = [openPanel filenames];
-        NSString* path = [[filesToOpen objectAtIndex:0] retain];
-        [collection setCurrentDirectory:path];
-		[self loadFileListForDirectory:path];
+        NSArray* filesToOpen = [openPanel URLs];
+        NSURL* directoryURL = [[filesToOpen objectAtIndex:0] retain];
+        [collection setCurrentDirectory:directoryURL];
+		[self loadFileListForDirectory:directoryURL];
 		[collection filterForMoviesWithThumbnailImages];
         }
     else
         {
-        //NSLog(@"cancelled from choose source directory");
+        NSLog(@"cancelled from choose source directory");
 		[NSApp terminate:self];
         }
     }
 
 
 
--(void) loadFileListForDirectory:(NSString*)directoryPath 
+-(void) loadFileListForDirectory:(NSURL*)directoryURL
     {
     //NSLog(@"loadFileListForDirectory");
 	
 	[progressBarPanel makeKeyAndOrderFront:self];
 
-    BOOL isDir = NO;
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray* directoryContents = [fileManager directoryContentsAtPath:directoryPath];
+    NSArray* directoryContents = [fileManager contentsOfDirectoryAtURL:directoryURL includingPropertiesForKeys:nil options: NSDirectoryEnumerationSkipsHiddenFiles error:nil];
 	unsigned long maxItems = [directoryContents count];
 	unsigned long currentItem = 0;
 	[progressBar setDoubleValue:0.0];
 	[progressBar setMinValue:0];
 	[progressBar setMaxValue:maxItems];
     NSEnumerator* e = [directoryContents objectEnumerator];
-    NSString *fileName;
-    while (fileName = (NSString*)[e nextObject])
+    NSURL *fileURL;
+    while (fileURL = (NSURL*)[e nextObject])
         {
 		[progressTextField setStringValue:[NSString stringWithFormat:@"Loading item %lu of %lu", currentItem, maxItems]];
 		[progressTextField displayIfNeeded];
 		[progressBar incrementBy:1];
 		[progressBar displayIfNeeded];
 		currentItem++;
-		
-        NSString* filePath = [NSString stringWithFormat:@"%@/%@", directoryPath, fileName];
-        if( ([fileManager fileExistsAtPath:filePath isDirectory:&isDir] && isDir) || [fileName isEqualToString:@".DS_Store"])
+
+        NSNumber *isDirectory;
+        [fileURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
+            
+        NSError *err;
+        if ([fileURL checkResourceIsReachableAndReturnError:&err] == NO)
             {
+            [[NSAlert alertWithError:err] runModal];
             continue;
             }
-        else //if ([@"JPG" caseInsensitiveCompare:[fileName pathExtension]] == NSOrderedSame)
+        else if ([isDirectory boolValue] == YES)
             {
-			TSMedia* media = [TSMedia initWithPath:directoryPath name:fileName];
+			TSMedia* media = [TSMedia initWithPath:directoryURL name:[fileURL lastPathComponent]];
 			[media loadData];
             [collection addObject:media];
             }
@@ -123,22 +122,16 @@
 	{
 	//NSLog(@"processNow");
 
-//    NSOpenPanel* openPanel = [NSOpenPanel openPanel];
-//    [openPanel setPrompt:@"Select"];
-//    [openPanel setCanCreateDirectories:YES];
-//    [openPanel setAllowsMultipleSelection:NO];
-//    [openPanel setCanChooseFiles:NO];
-//    [openPanel setCanChooseDirectories:YES];    
-//    unsigned result = [openPanel runModalForDirectory:nil file:nil types:nil];
     
-	NSAlert* alertPanel = [NSAlert alertWithMessageText:@"Proceed with processing?" defaultButton:@"Proceed" alternateButton:@"Cancel" otherButton:nil informativeTextWithFormat:@"Proceeding will cause the pictures to be renamed and reordered as specified, and will exit Systematize."];
+    NSAlert *alertPanel = [[NSAlert alloc] init];
+    [alertPanel addButtonWithTitle:@"Proceed"];
+    [alertPanel addButtonWithTitle:@"Cancel"];
+    [alertPanel setMessageText:@"Proceed with processing?"];
+    [alertPanel setInformativeText:@"Proceeding will cause the pictures to be renamed and reordered as specified, and will exit Systematize."];
+    [alertPanel setAlertStyle:NSWarningAlertStyle];
 	unsigned long result = [alertPanel runModal];
-//    if (result == NSOKButton) 
-//        {
-//        NSArray* filesToOpen = [openPanel filenames];
-//        NSString* path = [filesToOpen objectAtIndex:0];
 
-	if (result == NSAlertDefaultReturn)
+	if (result == NSAlertFirstButtonReturn)
 		{
 		unsigned long maxItems = [collection size];
 		unsigned long i;
@@ -153,11 +146,15 @@
 			[progressBar incrementBy:1];
 			[progressBar displayIfNeeded];
 
-			[[collection objectAtIndex:i] doRenameToDirectory:[collection currentDirectory] withIndex:i+1 andMaxCount:maxItems];
+			[[collection objectAtIndex:i] doRenameToDirectory:[collection currentDirectory] withIndex:(int)i+1 andMaxCount:(int)maxItems];
 			}
 		
 		[progressBarPanel orderOut:nil];
-		NSAlert* confirmPanel = [NSAlert alertWithMessageText:@"Finished Processing" defaultButton:@"Quit" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Renamed %lu images to directory:\n%@", [collection size], [collection currentDirectory]];
+        NSAlert *confirmPanel = [[NSAlert alloc] init];
+        [confirmPanel addButtonWithTitle:@"Quit"];
+        [confirmPanel setMessageText:@"Finished Processing"];
+        [confirmPanel setInformativeText:[NSString stringWithFormat:@"Renamed %lu images to directory:\n%@", [collection size], [collection currentDirectory]]];
+        [confirmPanel setAlertStyle:NSWarningAlertStyle];
 		[confirmPanel runModal];
 		[NSApp terminate:self];
 		}

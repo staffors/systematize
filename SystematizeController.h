@@ -1,4 +1,6 @@
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
+@import AVKit;
+@import AVFoundation;
 
 @class TSMediaCollection;
 @class TSMedia;
@@ -14,7 +16,7 @@
 	IBOutlet NSView* swapView;
 	IBOutlet NSView* thumbnailView;
 	IBOutlet NSImageView* imageView;
-	IBOutlet QTMovieView* movieView;
+	IBOutlet AVPlayer* movieView;
 
 	IBOutlet NSTextField* selectedImagesLabel;
 	IBOutlet NSTextField* creationDateLabel;
@@ -37,7 +39,7 @@
 
 -(void) awakeFromNib;
 -(void) chooseSourceDirectory:(id)sender;
--(void) loadFileListForDirectory:(NSString*)directoryPath;
+-(void) loadFileListForDirectory:(NSURL*)directoryPath;
 
 
 // action targets

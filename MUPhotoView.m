@@ -37,9 +37,13 @@
     [self exposeBinding:@"useShadowBorder"];
     [self exposeBinding:@"useOutlineBorder"];
     [self exposeBinding:@"useShadowSelection"];
-    [self exposeBinding:@"useOutlineSelection"];
-    
-    [self setKeys:[NSArray arrayWithObject:@"backgroundColor"] triggerChangeNotificationsForDependentKey:@"shadowBoxColor"];
+    [self exposeBinding:@"useOutlineSelection"];    
+}
+
+
++ (NSSet*) keyPathsForValuesAffectingShadowBoxColor
+{
+    return [NSSet setWithObject:@"backgroundColor"];
 }
 
 - (id)initWithFrame:(NSRect)frameRect

@@ -15,7 +15,7 @@
     
 
 
-- (void)setCurrentDirectory:(NSString*)path;
+- (void)setCurrentDirectory:(NSURL*)path;
     {
 	if (rootPath)
         {
@@ -31,7 +31,7 @@
 	
 	
     
-- (NSString *)currentDirectory;
+- (NSURL *)currentDirectory;
 	{
 	return [[rootPath retain] autorelease];
 	}

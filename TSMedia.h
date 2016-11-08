@@ -1,11 +1,13 @@
-#import <Foundation/Foundation.h>
-#import <Cocoa/Cocoa.h>
-#import <QuartzCore/QuartzCore.h>
+@import Foundation;
+@import Cocoa;
+@import AVFoundation;
+@import AppKit;
+@import CoreMedia;
 #import "TSConstants.h"
 
 @interface TSMedia : NSObject 
     {
-    NSString* path;
+    NSURL* path;
     NSString* name;
 	NSString* newName;
 	NSDictionary* meta;
@@ -20,14 +22,14 @@
     NSImage* sourceImage;
 	NSImage* fastImage;
 	NSImage* thumbnail;
-    QTMovie* movie;
+    AVURLAsset* movie;
 	NSImage* typeBadge;
 	NSImage* infoBadge;
     
     BOOL loaded;
     }
 
-+(TSMedia*) initWithPath:(NSString*)p name:(NSString*)n;
++(TSMedia*) initWithPath:(NSURL*)p name:(NSString*)n;
 
 -(BOOL) isLoaded;
 -(void) loadData;
@@ -37,7 +39,7 @@
 -(void) addThumbnailInfo:(TSMedia*)item;
 
 
-- (void)doRenameToDirectory:destinationPath withIndex:(int)index andMaxCount:(int)maxCount;
+- (void)doRenameToDirectory:(NSURL*)destinationPath withIndex:(int)index andMaxCount:(int)maxCount;
 
 
 // type info
@@ -51,19 +53,19 @@
 -(NSImage*) image;
 -(NSImage*) fastImage;
 -(NSImage*) thumbnail;
--(QTMovie*) movie;
+-(AVURLAsset*) movie;
 
 
 // name and attribute accessors
--(NSString*) path;
--(void) setPath:(NSString*)str;
+-(NSURL*) path;
+-(void) setPath:(NSURL*)str;
 -(NSString*) name;
 -(void) setName:(NSString*)str;
 -(NSString*) newName;
 -(void) setNewName:(NSString*)str;
 
 // read only attributes
--(NSString*) fullPath;
+-(NSURL*) fullPath;
 -(NSString*) baseName;
 -(NSString*) extension;
 -(NSString*) displayName;

@@ -6,7 +6,6 @@
 	{
 	NSImage *scaledImage = [self copy];
 
-	[scaledImage setScalesWhenResized:YES];
 	[scaledImage setSize:newSize];
 
 	return [scaledImage autorelease];
@@ -29,7 +28,6 @@
     scaledSize.width = currentSize.width * scale;
     scaledSize.height = currentSize.height * scale;
 
-	[scaledImage setScalesWhenResized:YES];
 	[scaledImage setSize:scaledSize];
 
 	return [scaledImage autorelease];

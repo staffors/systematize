@@ -5,7 +5,7 @@
 @implementation TSMedia
 
 
-+(TSMedia*) initWithPath:(NSString*)p name:(NSString*)n
++(TSMedia*) initWithPath:(NSURL*)p name:(NSString*)n
     {
     TSMedia* photo = [[[TSMedia alloc] init] autorelease];
     [photo setPath:p];
@@ -60,7 +60,7 @@
 		
 		// load attributes
 		NSFileManager* fileManager = [NSFileManager defaultManager];
-		NSDictionary* fileAttributes = [fileManager fileAttributesAtPath:[self fullPath] traverseLink:YES];
+		NSDictionary* fileAttributes = [fileManager attributesOfItemAtPath:[[self fullPath] absoluteString] error:nil];
 		creationDate = [[fileAttributes objectForKey:NSFileCreationDate] retain];
 		modificationDate = [[fileAttributes objectForKey:NSFileModificationDate] retain];
 		fileSize = [[fileAttributes objectForKey:NSFileSize] retain];
@@ -68,7 +68,7 @@
         if ([self isImage])
             {
 			// use ImageIO to get a CGImageRef for a file at a given path which we can use to load exif data
-			NSURL * url = [NSURL fileURLWithPath:[self fullPath]];
+			NSURL * url = [self fullPath];
 			NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys: (id)kCFBooleanTrue, (id)kCGImageSourceShouldCache, (id)kCFBooleanTrue, (id)kCGImageSourceShouldAllowFloat, NULL];
 			CGImageSourceRef sourceRef = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
 			meta = (NSDictionary*)CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, (CFDictionaryRef)options);
@@ -113,15 +113,50 @@
             }
         else
             {
+            NSURL * url = [self fullPath];
 			NSError* loadingError = nil;
-            movie = [[QTMovie alloc] initWithFile:[self fullPath] error:&loadingError];
+            movie = [[AVURLAsset alloc] initWithURL:url options:nil];
+                
 			if (!movie && loadingError)
 				{
 				//NSLog(@"failed to load movie description: %@", [loadingError localizedDescription]);
 				//NSLog(@"failed to load movie reason: %@", [loadingError localizedFailureReason]);
 				}
-			fastImage = [[movie posterImage] retain];
-			thumbnail = [[fastImage imageScaledToMaxDimension:200] retain];							
+            AVAssetImageGenerator* imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:movie];
+            [movie loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler:
+                ^{
+                if ([movie statusOfValueForKey:@"tracks" error:NULL] != AVKeyValueStatusLoaded)
+                    {
+                    return;
+                    }
+                
+                NSArray *visualTracks = [movie tracksWithMediaCharacteristic:AVMediaCharacteristicVisual];
+                NSArray *audibleTracks = [movie tracksWithMediaCharacteristic:AVMediaCharacteristicAudible];
+                if ([visualTracks count] > 0)
+                    {
+                    // Grab the first frame from the asset and display it
+                    [imageGenerator generateCGImagesAsynchronouslyForTimes:[NSArray arrayWithObject:[NSValue valueWithCMTime:kCMTimeZero]] completionHandler:^(CMTime requestedTime, CGImageRef image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error) {
+                        if (result == AVAssetImageGeneratorSucceeded)
+                            {
+                            fastImage = [[NSImage alloc] initWithCGImage:image size:NSZeroSize];
+                            }
+                        else
+                            {
+                            fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
+                            }
+                    }];
+                }
+                else if ([audibleTracks count] > 0)
+                    {
+                    fastImage = [NSImage imageNamed:@"AudioOnly2x"];
+                    }
+                else
+                    {
+                    fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
+                    }
+            }];
+                
+			thumbnail = [[fastImage imageScaledToMaxDimension:200] retain];
             }
         loaded = YES;
         }
@@ -163,12 +198,10 @@
 -(NSImage *) rotateRight:(NSImage *)image;
     {
 	NSImage* tmpImage = [image copy];
-    [tmpImage setScalesWhenResized:YES];
 
     float width = [tmpImage size].width;
     float height = [tmpImage size].height;
     NSImage* targetImage = [[NSImage alloc] initWithSize:[tmpImage size]];
-    [targetImage setScalesWhenResized:YES];
     [targetImage setSize:NSMakeSize(height, width)];
     
     [targetImage lockFocus];
@@ -194,12 +227,10 @@
 -(NSImage *) rotateLeft:(NSImage *)image;
     {
     NSImage* tmpImage = [image copy];
-    [tmpImage setScalesWhenResized:YES];    
 
     float width = [tmpImage size].width;
     float height = [tmpImage size].height;
     NSImage* targetImage = [[NSImage alloc] initWithSize:[tmpImage size]];
-    [targetImage setScalesWhenResized:YES];
     [targetImage setSize:NSMakeSize(height, width)];
 
     [targetImage lockFocus];
@@ -285,7 +316,7 @@
 	
 	
 	
-- (void)doRenameToDirectory:destinationPath withIndex:(int)index andMaxCount:(int)maxCount;
+- (void)doRenameToDirectory:(NSURL*)destinationPath withIndex:(int)index andMaxCount:(int)maxCount;
 	{
 	NSString* targetName;
 	
@@ -302,8 +333,10 @@
 		targetName = [NSString stringWithFormat:@"%04d_%@", index, [self displayNameWithNoPrefix]];
 		}
 	
-	NSString* newPath = [NSString stringWithFormat:@"%@/%@.%@", destinationPath, targetName, [self extension]];
-	if ([[self fullPath] isEqualToString:newPath])
+        
+        
+    NSURL* newPath = [NSURL fileURLWithPath: [NSString stringWithFormat:@"%@/%@.%@", destinationPath, targetName, [self extension]] relativeToURL:nil];
+	if ([[self fullPath] isEqualTo:newPath])
 		{
 		//NSLog(@"No need to move %@", [self name]);
 		return;
@@ -311,17 +344,18 @@
 		
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	BOOL isDir;
-	if (! [fileManager fileExistsAtPath:destinationPath isDirectory:&isDir] && isDir)
+	if (! [fileManager fileExistsAtPath:[destinationPath absoluteString] isDirectory:&isDir] && isDir)
 		{
 		//NSLog(@"creating destination directory: %@", destinationPath);
-            [fileManager createDirectoryAtPath:destinationPath withIntermediateDirectories:TRUE attributes:nil error:nil];
+        [fileManager createDirectoryAtURL:destinationPath withIntermediateDirectories:TRUE attributes:nil error:nil];
 		}
 	else if (!isDir)
 		{
 		//NSLog(@"Aborting because there is a file where the systematized directory ought to be");
 		}
 		
-	if ([fileManager movePath:[self fullPath] toPath:newPath handler:nil])
+    NSError* error = nil;
+	if ([fileManager moveItemAtURL:[self fullPath] toURL:newPath error:&error])
 		{
 		//NSLog(@"moved %@ to %@", [self fullPath], newPath);
 		}
@@ -332,9 +366,11 @@
 		
 	if (thumbnailName)
 		{
-		NSString* newThumbnailPath = [NSString stringWithFormat:@"%@/%@.%@", destinationPath, targetName, [[thumbnailName  pathExtension] lowercaseString]];
-		NSString* oldThumbnailPath = [NSString stringWithFormat:@"%@/%@", [self path], thumbnailName];
-		if ([fileManager movePath:oldThumbnailPath toPath:newThumbnailPath handler:nil])
+        NSURL* newThumbnailPath = [NSURL fileURLWithPath:[targetName trim] relativeToURL:destinationPath];
+        NSURL* oldThumbnailPath = [NSURL fileURLWithPath:[[self name] trim] relativeToURL:[self path]];
+            
+        NSError* error = nil;
+        if ([fileManager moveItemAtURL:oldThumbnailPath toURL:newThumbnailPath error:&error])
 			{
 			//NSLog(@"thumbnail image moved successfully");
 			}
@@ -407,7 +443,7 @@
     {
 	if (!sourceImage)
 		{
-		sourceImage = [[NSImage alloc] initWithContentsOfFile:[self fullPath]];
+		sourceImage = [[NSImage alloc] initWithContentsOfURL:[self fullPath]];
 		}
     return [[sourceImage retain] autorelease];
     }
@@ -425,7 +461,7 @@
     }
     
     
--(QTMovie*) movie;
+-(AVURLAsset*) movie;
     {
     return [[movie retain] autorelease];
     }
@@ -436,15 +472,15 @@
 //
 // name and attribute accessors
 //
--(NSString*) path;
+-(NSURL*) path;
     {
     return [[path retain] autorelease];
     }
 
--(void) setPath:(NSString*)str;
+-(void) setPath:(NSURL*)url;
     {
 	[path release];
-    path = [str retain];
+    path = [url retain];
     }
 
 
@@ -479,9 +515,9 @@
 //
 // read only attributes
 //
--(NSString*) fullPath;
+-(NSURL*) fullPath;
     {
-    return [NSString stringWithFormat:@"%@/%@", [[self path] trim], [[self name] trim]];
+    return [NSURL fileURLWithPath:[[self name] trim] relativeToURL:[self path]];
     }
 	
 	
