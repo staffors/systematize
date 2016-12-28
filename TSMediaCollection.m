@@ -42,7 +42,7 @@
     
 - (void)filterForMoviesWithThumbnailImages;
 	{
-	//NSLog(@"filterForMoviesWithThumbnailImages");
+	NSLog(@"filterForMoviesWithThumbnailImages");
 
 	NSMutableIndexSet *indexesToDelete = [[NSMutableIndexSet alloc] init];
 	int i;
@@ -61,7 +61,7 @@
 					if ([[movie baseName] caseInsensitiveCompare:[item baseName]] == NSOrderedSame)
 						{
 						// we found a match so remember its index and add its info to the movie item
-						//NSLog(@" - adding thumbnail from index %d for movie %d", j, i);
+						NSLog(@" - adding thumbnail from index %d for movie %d", j, i);
 						[movie addThumbnailInfo:item];
 						[indexesToDelete addIndex:j];
 						}
@@ -69,7 +69,7 @@
 				}
 			}
 		}
-	//NSLog(@" - found %d matches", [indexesToDelete count]);
+	NSLog(@" - found %d matches", [indexesToDelete count]);
 	// iterate down through the indexesToDelete, removing them as we go
 	unsigned long index = [indexesToDelete lastIndex];
 	while (index != NSNotFound)

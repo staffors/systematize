@@ -266,15 +266,15 @@
 		// draw insertion point if during a drag
 		if (insertionRectIndex != -1)
 			{
-			//NSLog(@"insertionRectIndex = %u", insertionRectIndex);
+			NSLog(@"insertionRectIndex = %u", insertionRectIndex);
 			NSRect currentRect = [self gridRectForIndex:insertionRectIndex];
 			NSBezierPath *insertionPath = [NSBezierPath bezierPath];
 			[insertionPath setLineWidth:3.0];
 			[insertionPath setLineCapStyle:NSRoundLineCapStyle];
 			[insertionPath moveToPoint:NSMakePoint(currentRect.origin.x+3, currentRect.origin.y+2)];
 			[insertionPath lineToPoint:NSMakePoint(currentRect.origin.x+3, currentRect.origin.y+currentRect.size.height-2)];
-			//NSLog(@"Drawing insertion point from: %f %f", currentRect.origin.x + currentRect.size.width-1, currentRect.origin.y);
-			//NSLog(@"to: %f %f", currentRect.origin.x + currentRect.size.width-1, currentRect.origin.y+currentRect.size.height);
+			NSLog(@"Drawing insertion point from: %f %f", currentRect.origin.x + currentRect.size.width-1, currentRect.origin.y);
+			NSLog(@"to: %f %f", currentRect.origin.x + currentRect.size.width-1, currentRect.origin.y+currentRect.size.height);
 			[[self selectionBorderColor] set];		
 			[insertionPath stroke];
 			}
@@ -327,13 +327,13 @@
 
 - (NSArray *)photosArray
 {
-    //NSLog(@"in -photosArray, returned photosArray = %@", photosArray);
+    NSLog(@"in -photosArray, returned photosArray = %@", photosArray);
     return [[photosArray retain] autorelease]; 
 }
 
 - (void)setPhotosArray:(NSArray *)aPhotosArray
 {
-    //NSLog(@"in -setPhotosArray:, old value of photosArray: %@, changed to: %@", photosArray, aPhotosArray);
+    NSLog(@"in -setPhotosArray:, old value of photosArray: %@, changed to: %@", photosArray, aPhotosArray);
     if (photosArray != aPhotosArray) {
         [photosArray release];
         [self willChangeValueForKey:@"photosArray"];
@@ -366,13 +366,13 @@
 
 - (NSIndexSet *)selectedPhotoIndexes
 {
-    //NSLog(@"in -selectedPhotoIndexes, returned selectedPhotoIndexes = %@", selectedPhotoIndexes);
+    NSLog(@"in -selectedPhotoIndexes, returned selectedPhotoIndexes = %@", selectedPhotoIndexes);
     return [[selectedPhotoIndexes retain] autorelease]; 
 }
 
 - (void)setSelectedPhotoIndexes:(NSIndexSet *)aSelectedPhotoIndexes
 {
-    //NSLog(@"in -setSelectedPhotoIndexes:, old value of selectedPhotoIndexes: %@, changed to: %@", selectedPhotoIndexes, aSelectedPhotoIndexes);
+    NSLog(@"in -setSelectedPhotoIndexes:, old value of selectedPhotoIndexes: %@, changed to: %@", selectedPhotoIndexes, aSelectedPhotoIndexes);
     if ((selectedPhotoIndexes != aSelectedPhotoIndexes) && (![selectedPhotoIndexes isEqualToIndexSet:aSelectedPhotoIndexes])) {
 
 		// Set the selection and send KVO
@@ -390,13 +390,13 @@
 
 - (BOOL)useBorderSelection
 {
-    //NSLog(@"in -useBorderSelection, returned useBorderSelection = %@", useBorderSelection ? @"YES": @"NO");
+    NSLog(@"in -useBorderSelection, returned useBorderSelection = %@", useBorderSelection ? @"YES": @"NO");
     return useBorderSelection;
 }
 
 - (void)setUseBorderSelection:(BOOL)flag
 {
-    //NSLog(@"in -setUseBorderSelection, old value of useBorderSelection: %@, changed to: %@", (useBorderSelection ? @"YES": @"NO"), (flag ? @"YES": @"NO"));
+    NSLog(@"in -setUseBorderSelection, old value of useBorderSelection: %@, changed to: %@", (useBorderSelection ? @"YES": @"NO"), (flag ? @"YES": @"NO"));
     [self willChangeValueForKey:@"useBorderSelection"];
     useBorderSelection = flag;
     [self didChangeValueForKey:@"useBorderSelection"];
@@ -406,13 +406,13 @@
 
 - (NSColor *)selectionBorderColor
 {
-    //NSLog(@"in -selectionBorderColor, returned selectionBorderColor = %@", selectionBorderColor);
+    NSLog(@"in -selectionBorderColor, returned selectionBorderColor = %@", selectionBorderColor);
     return [[selectionBorderColor retain] autorelease]; 
 }
 
 - (void)setSelectionBorderColor:(NSColor *)aSelectionBorderColor
 {
-    //NSLog(@"in -setSelectionBorderColor:, old value of selectionBorderColor: %@, changed to: %@", selectionBorderColor, aSelectionBorderColor);
+    NSLog(@"in -setSelectionBorderColor:, old value of selectionBorderColor: %@, changed to: %@", selectionBorderColor, aSelectionBorderColor);
     if (selectionBorderColor != aSelectionBorderColor) {
         [selectionBorderColor release];
         [self willChangeValueForKey:@"selectionBorderColor"];
@@ -423,13 +423,13 @@
 
 - (BOOL)useShadowSelection
 {
-    //NSLog(@"in -useShadowSelection, returned useShadowSelection = %@", useShadowSelection ? @"YES": @"NO");
+    NSLog(@"in -useShadowSelection, returned useShadowSelection = %@", useShadowSelection ? @"YES": @"NO");
     return useShadowSelection;
 }
 
 - (void)setUseShadowSelection:(BOOL)flag
 {
-    //NSLog(@"in -setUseShadowSelection, old value of useShadowSelection: %@, changed to: %@", (useShadowSelection ? @"YES": @"NO"), (flag ? @"YES": @"NO"));
+    NSLog(@"in -setUseShadowSelection, old value of useShadowSelection: %@, changed to: %@", (useShadowSelection ? @"YES": @"NO"), (flag ? @"YES": @"NO"));
     [self willChangeValueForKey:@"useShadowSelection"];
     useShadowSelection = flag;
     [self willChangeValueForKey:@"useShadowSelection"];
@@ -443,13 +443,13 @@
 
 - (BOOL)useShadowBorder
 {
-    //NSLog(@"in -useShadowBorder, returned useShadowBorder = %@", useShadowBorder ? @"YES": @"NO");
+    NSLog(@"in -useShadowBorder, returned useShadowBorder = %@", useShadowBorder ? @"YES": @"NO");
     return useShadowBorder;
 }
 
 - (void)setUseShadowBorder:(BOOL)flag
 {
-    //NSLog(@"in -setUseShadowBorder, old value of useShadowBorder: %@, changed to: %@", (useShadowBorder ? @"YES": @"NO"), (flag ? @"YES": @"NO"));
+    NSLog(@"in -setUseShadowBorder, old value of useShadowBorder: %@, changed to: %@", (useShadowBorder ? @"YES": @"NO"), (flag ? @"YES": @"NO"));
     [self willChangeValueForKey:@"useShadowBorder"];
     useShadowBorder = flag;
     [self didChangeValueForKey:@"useShadowBorder"];
@@ -459,13 +459,13 @@
 
 - (BOOL)useOutlineBorder
 {
-    //NSLog(@"in -useOutlineBorder, returned useOutlineBorder = %@", useOutlineBorder ? @"YES": @"NO");
+    NSLog(@"in -useOutlineBorder, returned useOutlineBorder = %@", useOutlineBorder ? @"YES": @"NO");
     return useOutlineBorder;
 }
 
 - (void)setUseOutlineBorder:(BOOL)flag
 {
-    //NSLog(@"in -setUseOutlineBorder, old value of useOutlineBorder: %@, changed to: %@", (useOutlineBorder ? @"YES": @"NO"), (flag ? @"YES": @"NO"));
+    NSLog(@"in -setUseOutlineBorder, old value of useOutlineBorder: %@, changed to: %@", (useOutlineBorder ? @"YES": @"NO"), (flag ? @"YES": @"NO"));
     [self willChangeValueForKey:@"useOutlineBorder"];
     useOutlineBorder = flag;
     [self didChangeValueForKey:@"useOutlineBorder"];
@@ -475,13 +475,13 @@
 
 - (NSColor *)backgroundColor
 {
-    //NSLog(@"in -backgroundColor, returned backgroundColor = %@", backgroundColor);
+    NSLog(@"in -backgroundColor, returned backgroundColor = %@", backgroundColor);
     return [[backgroundColor retain] autorelease]; 
 }
 
 - (void)setBackgroundColor:(NSColor *)aBackgroundColor
 {
-    //NSLog(@"in -setBackgroundColor:, old value of backgroundColor: %@, changed to: %@", backgroundColor, aBackgroundColor);
+    NSLog(@"in -setBackgroundColor:, old value of backgroundColor: %@, changed to: %@", backgroundColor, aBackgroundColor);
     if (backgroundColor != aBackgroundColor) {
         [backgroundColor release];
         [self willChangeValueForKey:@"backgroundColor"];
@@ -509,13 +509,13 @@
 
 - (float)photoSize
 {
-    //NSLog(@"in -photoSize, returned photoSize = %f", photoSize);
+    NSLog(@"in -photoSize, returned photoSize = %f", photoSize);
     return photoSize;
 }
 
 - (void)setPhotoSize:(float)aPhotoSize
 {
-    //NSLog(@"in -setPhotoSize, old value of photoSize: %f, changed to: %f", photoSize, aPhotoSize);
+    NSLog(@"in -setPhotoSize, old value of photoSize: %f, changed to: %f", photoSize, aPhotoSize);
     [self willChangeValueForKey:@"photoSize"];
     photoSize = aPhotoSize;
     [self didChangeValueForKey:@"photoSize"];
@@ -549,13 +549,13 @@
 
 - (float)photoVerticalSpacing
 {
-    //NSLog(@"in -photoVerticalSpacing, returned photoVerticalSpacing = %f", photoVerticalSpacing);
+    NSLog(@"in -photoVerticalSpacing, returned photoVerticalSpacing = %f", photoVerticalSpacing);
     return photoVerticalSpacing;
 }
 
 - (void)setPhotoVerticalSpacing:(float)aPhotoVerticalSpacing
 {
-    //NSLog(@"in -setPhotoVerticalSpacing, old value of photoVerticalSpacing: %f, changed to: %f", photoVerticalSpacing, aPhotoVerticalSpacing);
+    NSLog(@"in -setPhotoVerticalSpacing, old value of photoVerticalSpacing: %f, changed to: %f", photoVerticalSpacing, aPhotoVerticalSpacing);
     [self willChangeValueForKey:@"photoVerticalSpacing"];
     photoVerticalSpacing = aPhotoVerticalSpacing;
     [self didChangeValueForKey:@"photoVertificalSpacing"];
@@ -583,13 +583,13 @@
 
 - (float)photoHorizontalSpacing
 {
-    //NSLog(@"in -photoHorizontalSpacing, returned photoHorizontalSpacing = %f", photoHorizontalSpacing);
+    NSLog(@"in -photoHorizontalSpacing, returned photoHorizontalSpacing = %f", photoHorizontalSpacing);
     return photoHorizontalSpacing;
 }
 
 - (void)setPhotoHorizontalSpacing:(float)aPhotoHorizontalSpacing
 {
-    //NSLog(@"in -setPhotoHorizontalSpacing, old value of photoHorizontalSpacing: %f, changed to: %f", photoHorizontalSpacing, aPhotoHorizontalSpacing);
+    NSLog(@"in -setPhotoHorizontalSpacing, old value of photoHorizontalSpacing: %f, changed to: %f", photoHorizontalSpacing, aPhotoHorizontalSpacing);
     [self willChangeValueForKey:@"photoHorizontalSpacing"];
     photoHorizontalSpacing = aPhotoHorizontalSpacing;
     [self didChangeValueForKey:@"photoHorizontalSpacing"];
@@ -617,13 +617,13 @@
 
 - (NSColor *)borderOutlineColor
 {
-    //NSLog(@"in -borderOutlineColor, returned borderOutlineColor = %@", borderOutlineColor);
+    NSLog(@"in -borderOutlineColor, returned borderOutlineColor = %@", borderOutlineColor);
     return [[borderOutlineColor retain] autorelease]; 
 }
 
 - (void)setBorderOutlineColor:(NSColor *)aBorderOutlineColor
 {
-    //NSLog(@"in -setBorderOutlineColor:, old value of borderOutlineColor: %@, changed to: %@", borderOutlineColor, aBorderOutlineColor);
+    NSLog(@"in -setBorderOutlineColor:, old value of borderOutlineColor: %@, changed to: %@", borderOutlineColor, aBorderOutlineColor);
     if (borderOutlineColor != aBorderOutlineColor) {
         [borderOutlineColor release];
         [self willChangeValueForKey:@"borderOutlineColor"];
@@ -637,13 +637,13 @@
 
 - (NSColor *)shadowBoxColor
 {
-    //NSLog(@"in -shadowBoxColor, returned shadowBoxColor = %@", shadowBoxColor);
+    NSLog(@"in -shadowBoxColor, returned shadowBoxColor = %@", shadowBoxColor);
     return [[shadowBoxColor retain] autorelease]; 
 }
 
 - (void)setShadowBoxColor:(NSColor *)aShadowBoxColor
 {
-    //NSLog(@"in -setShadowBoxColor:, old value of shadowBoxColor: %@, changed to: %@", shadowBoxColor, aShadowBoxColor);
+    NSLog(@"in -setShadowBoxColor:, old value of shadowBoxColor: %@, changed to: %@", shadowBoxColor, aShadowBoxColor);
     if (shadowBoxColor != aShadowBoxColor) {
         [shadowBoxColor release];
         shadowBoxColor = [aShadowBoxColor copy];
@@ -654,13 +654,13 @@
 }
 - (float)selectionBorderWidth
 {
-    //NSLog(@"in -selectionBorderWidth, returned selectionBorderWidth = %f", selectionBorderWidth);
+    NSLog(@"in -selectionBorderWidth, returned selectionBorderWidth = %f", selectionBorderWidth);
     return selectionBorderWidth;
 }
 
 - (void)setSelectionBorderWidth:(float)aSelectionBorderWidth
 {
-    //NSLog(@"in -setSelectionBorderWidth, old value of selectionBorderWidth: %f, changed to: %f", selectionBorderWidth, aSelectionBorderWidth);
+    NSLog(@"in -setSelectionBorderWidth, old value of selectionBorderWidth: %f, changed to: %f", selectionBorderWidth, aSelectionBorderWidth);
     selectionBorderWidth = aSelectionBorderWidth;
 }
 
@@ -939,7 +939,7 @@
 
 -(NSDragOperation) draggingEntered:(id <NSDraggingInfo>)sender;
 	{
-	//NSLog(@"dragging entered");
+	NSLog(@"dragging entered");
 	if ((NSDragOperationPrivate & [sender draggingSourceOperationMask]) == NSDragOperationPrivate)
 		{
 		// draw insertion point for potential drop
@@ -994,7 +994,7 @@
 
 -(void) draggingExited:(id <NSDraggingInfo>)sender;
 	{
-	//NSLog(@"dragging exited: index = %u", insertionRectIndex);
+	NSLog(@"dragging exited: index = %u", insertionRectIndex);
 	unsigned long lastRectIndex = insertionRectIndex;
 	insertionRectIndex = -1;
 	[self setNeedsDisplayInRect:[self gridRectForIndex:lastRectIndex]];		
@@ -1003,7 +1003,7 @@
 
 -(void) draggingEnded:(id <NSDraggingInfo>)sender;
 	{
-	//NSLog(@"dragging ended: index = %u", insertionRectIndex);
+	NSLog(@"dragging ended: index = %u", insertionRectIndex);
 //	unsigned lastRectIndex = insertionRectIndex;
 //	insertionRectIndex = -1;
 //	[self setNeedsDisplayInRect:[self gridRectForIndex:lastRectIndex]];		
@@ -1012,14 +1012,14 @@
 
 -(BOOL) prepareForDragOperation:(id <NSDraggingInfo>)sender;
 	{
-	//NSLog(@"prepare for drag operation: index = %u", insertionRectIndex);
+	NSLog(@"prepare for drag operation: index = %u", insertionRectIndex);
 	return YES;
 	}
 
 
 -(BOOL) performDragOperation:(id <NSDraggingInfo>)sender;
 	{
-	//NSLog(@"perform drag operation: index = %u", insertionRectIndex);
+	NSLog(@"perform drag operation: index = %u", insertionRectIndex);
 	if (nil != delegate)
 		{
 		[delegate photoView:self didDragSelection:[self selectionIndexes] toIndex:(unsigned int)insertionRectIndex];
@@ -1030,7 +1030,7 @@
 	
 -(void) concludeDragOperation:(id <NSDraggingInfo>)sender;
 	{
-	//NSLog(@"conclude drag operation");
+	NSLog(@"conclude drag operation");
 	if (nil != delegate)
 		{
 		NSIndexSet* newSelection = [[[NSIndexSet alloc] init] autorelease];
@@ -1510,7 +1510,7 @@
 
 - (void)renamePhotos:(NSIndexSet*)selectedIndexes;
 	{
-	//NSLog(@"renamePhotos");
+	NSLog(@"renamePhotos");
 	[self updateGridAndFrame];
 	unsigned long index = [selectedIndexes firstIndex];
 	NSString* displayName = [[[delegate photoView:self objectAtIndex:(unsigned int)index] displayName] retain];
@@ -1518,7 +1518,7 @@
 	[editorTextField selectText:self];
 	[self addSubview:editorTextField];
 	NSRect gridRect = [self gridRectForIndex:index];
-	//NSLog(@"grid rect = %f %f %f %f", gridRect.origin.x, gridRect.origin.y, gridRect.size.width, gridRect.size.height);
+	NSLog(@"grid rect = %f %f %f %f", gridRect.origin.x, gridRect.origin.y, gridRect.size.width, gridRect.size.height);
 	NSImage *photo = [self photoAtIndex:index];
     photo = [self scalePhoto:photo toRect:gridRect];
 	NSSize scaledSize = [self scaledPhotoSizeForSize:[photo size]];
@@ -1526,7 +1526,7 @@
     photoRect = [self centerScanRect:photoRect];
 	
 	NSRect editorFrame = [editorTextField frame];
-	//NSLog(@"oldFrame rect = %f %f %f %f", editorFrame.origin.x, editorFrame.origin.y, editorFrame.size.width, editorFrame.size.height);	
+	NSLog(@"oldFrame rect = %f %f %f %f", editorFrame.origin.x, editorFrame.origin.y, editorFrame.size.width, editorFrame.size.height);	
 	// center it horizontally
 	float horizOffset = editorFrame.size.width / 2;
 	float gridXMiddle = gridRect.origin.x + (gridRect.size.width / 2);
@@ -1535,7 +1535,7 @@
 	float yOrigin = photoRect.origin.y + photoRect.size.height + 5;
 	
 	NSRect newFrame = NSMakeRect(xOrigin, yOrigin, editorFrame.size.width, editorFrame.size.height);
-	//NSLog(@"new frame = %f %f %f %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
+	NSLog(@"new frame = %f %f %f %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
 	[editorTextField setFrame:newFrame];
 	[editorTextField becomeFirstResponder];
 	[self display];
@@ -1544,7 +1544,7 @@
 
 - (void) nameEditingCompleted;
 	{
-	//NSLog(@"name editing completed");
+	NSLog(@"name editing completed");
 	//[editorTextField resignFirstResponder];
 	//[self becomeFirstResponder];
 	[[self window] performSelector:@selector(makeFirstResponder:) withObject:self afterDelay:0];
@@ -1557,7 +1557,7 @@
 	{
     if (command == @selector(cancelOperation:)) 
 		{
-		//NSLog(@"editing cancelled");
+		NSLog(@"editing cancelled");
 		[control abortEditing];
 		[[self window] performSelector:@selector(makeFirstResponder:) withObject:self afterDelay:0];
 		[[editorTextField retain] removeFromSuperview];
@@ -1833,8 +1833,8 @@
 // selection
 - (BOOL)isPhotoSelectedAtIndex:(unsigned long)index;
 {
-	//NSLog(@"is photo selected at index %u, %@, %@", index, dragSelectedPhotoIndexes, selectedPhotoIndexes);
-	//NSLog(@"isPhotoSelectedAtIndex: %u with drag count = %u, and delegate thinks selected = %u", index, [dragSelectedPhotoIndexes count], [[delegate selectionIndexesForPhotoView:self] containsIndex:index]);
+	NSLog(@"is photo selected at index %u, %@, %@", index, dragSelectedPhotoIndexes, selectedPhotoIndexes);
+	NSLog(@"isPhotoSelectedAtIndex: %u with drag count = %u, and delegate thinks selected = %u", index, [dragSelectedPhotoIndexes count], [[delegate selectionIndexesForPhotoView:self] containsIndex:index]);
     if (0 < [dragSelectedPhotoIndexes count]) 
 		{
         return [dragSelectedPhotoIndexes containsIndex:index];

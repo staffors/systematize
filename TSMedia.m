@@ -56,7 +56,7 @@
     {
     if (!loaded)
         {
-		//NSLog(@" - loading %@", [self name]);
+		NSLog(@" - loading %@", [self name]);
 		
 		// load attributes
 		NSFileManager* fileManager = [NSFileManager defaultManager];
@@ -75,12 +75,12 @@
 			[meta retain];
 			
 			/*
-			//NSLog(@"Meta information for file: %@", [self fullPath]);
+			NSLog(@"Meta information for file: %@", [self fullPath]);
 			NSEnumerator *enumerator = [meta keyEnumerator];
 			id key;
 			while ((key = [enumerator nextObject])) 
 				{
-				//NSLog(@"%@=%@", key, [meta objectForKey:key]); 
+				NSLog(@"%@=%@", key, [meta objectForKey:key]); 
 				}
 			*/
 			
@@ -119,8 +119,8 @@
                 
 			if (!movie && loadingError)
 				{
-				//NSLog(@"failed to load movie description: %@", [loadingError localizedDescription]);
-				//NSLog(@"failed to load movie reason: %@", [loadingError localizedFailureReason]);
+				NSLog(@"failed to load movie description: %@", [loadingError localizedDescription]);
+				NSLog(@"failed to load movie reason: %@", [loadingError localizedFailureReason]);
 				}
             AVAssetImageGenerator* imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:movie];
             [movie loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler:
@@ -338,7 +338,7 @@
     NSURL* newPath = [NSURL fileURLWithPath: [NSString stringWithFormat:@"%@/%@.%@", destinationPath, targetName, [self extension]] relativeToURL:nil];
 	if ([[self fullPath] isEqualTo:newPath])
 		{
-		//NSLog(@"No need to move %@", [self name]);
+		NSLog(@"No need to move %@", [self name]);
 		return;
 		}
 		
@@ -346,22 +346,22 @@
 	BOOL isDir;
 	if (! [fileManager fileExistsAtPath:[destinationPath absoluteString] isDirectory:&isDir] && isDir)
 		{
-		//NSLog(@"creating destination directory: %@", destinationPath);
+		NSLog(@"creating destination directory: %@", destinationPath);
         [fileManager createDirectoryAtURL:destinationPath withIntermediateDirectories:TRUE attributes:nil error:nil];
 		}
 	else if (!isDir)
 		{
-		//NSLog(@"Aborting because there is a file where the systematized directory ought to be");
+		NSLog(@"Aborting because there is a file where the systematized directory ought to be");
 		}
 		
     NSError* error = nil;
 	if ([fileManager moveItemAtURL:[self fullPath] toURL:newPath error:&error])
 		{
-		//NSLog(@"moved %@ to %@", [self fullPath], newPath);
+		NSLog(@"moved %@ to %@", [self fullPath], newPath);
 		}
 	else
 		{
-		//NSLog(@"failed to move %@ to %@", [self fullPath], newPath);
+		NSLog(@"failed to move %@ to %@", [self fullPath], newPath);
 		}
 		
 	if (thumbnailName)
@@ -372,11 +372,11 @@
         NSError* error = nil;
         if ([fileManager moveItemAtURL:oldThumbnailPath toURL:newThumbnailPath error:&error])
 			{
-			//NSLog(@"thumbnail image moved successfully");
+			NSLog(@"thumbnail image moved successfully");
 			}
 		else
 			{
-			//NSLog(@"failed to move thumbnail image %@ to %@", oldThumbnailPath, newThumbnailPath);
+			NSLog(@"failed to move thumbnail image %@ to %@", oldThumbnailPath, newThumbnailPath);
 			}
 		}
 	}

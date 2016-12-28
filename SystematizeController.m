@@ -75,7 +75,7 @@
 
 -(void) loadFileListForDirectory:(NSURL*)directoryURL
     {
-    //NSLog(@"loadFileListForDirectory");
+    NSLog(@"loadFileListForDirectory");
 	
 	[progressBarPanel makeKeyAndOrderFront:self];
 
@@ -124,7 +124,7 @@
 //
 - (IBAction)processNow:(id)sender;
 	{
-	//NSLog(@"processNow");
+	NSLog(@"processNow");
 
     
     NSAlert *alertPanel = [[NSAlert alloc] init];
@@ -164,7 +164,7 @@
 		}
     else
         {
-        //NSLog(@"cancelled from process window");
+        NSLog(@"cancelled from process window");
         }
 	}
 
@@ -237,44 +237,44 @@
 
 - (BOOL)acceptsFirstResponder;
 	{
-	//NSLog(@"acceptsFirstResponder");
+	NSLog(@"acceptsFirstResponder");
 	return YES;
 	}
 
 - (BOOL)resignFirstResponder;
 	{
-	//NSLog(@"resignFirstResponder");
+	NSLog(@"resignFirstResponder");
 	return YES;
 	}
 
 - (BOOL)becomeFirstResponder;
 	{
-	//NSLog(@"becomeFirstResponder");
+	NSLog(@"becomeFirstResponder");
 	return YES;
 	}
 
 - (void)keyDown:(NSEvent *)theEvent;
 	{
-	//NSLog(@"got a keyDown event");
+	NSLog(@"got a keyDown event");
 	[self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
 	}
 
 
 - (void)cancelOperation:(id)sender;
 	{
-	//NSLog(@"cancelOperation");
+	NSLog(@"cancelOperation");
 	if (ThumbnailType == currentDisplayMode)
 		{
-		//NSLog(@"wait, we shouldn't be here....");
+		NSLog(@"wait, we shouldn't be here....");
 		}
 	if (ImageType == currentDisplayMode)
 		{
-		//NSLog(@"Swapping out image view");
+		NSLog(@"Swapping out image view");
 		[[imageView retain] removeFromSuperview];
 		}
 	if (MovieType == currentDisplayMode)
 		{
-		//NSLog(@"Swapping out movie view");
+		NSLog(@"Swapping out movie view");
 		[[movieView retain] removeFromSuperview];
 		}
 	[swapView addSubview:thumbnailView];
@@ -293,21 +293,21 @@
 
 -(void) displayImage:(TSMedia*)item
     {
-    //NSLog(@"displayImage:%@", [item name]);	
+    NSLog(@"displayImage:%@", [item name]);	
 	
 	if (ThumbnailType == currentDisplayMode)
         {
-        //NSLog(@"Swapping out thumbnail view");
+        NSLog(@"Swapping out thumbnail view");
         [[thumbnailView retain] removeFromSuperview];
         }
 	if (MovieType == currentDisplayMode)
         {
-        //NSLog(@"Swapping out movie view");
+        NSLog(@"Swapping out movie view");
         [[movieView retain] removeFromSuperview];
         }
     if (ImageType != currentDisplayMode)
         {
-        //NSLog(@"Swapping in image view");
+        NSLog(@"Swapping in image view");
         NSSize frameSize = [swapView frame].size;
         [imageView setFrame:NSMakeRect(0.0, 0.0, frameSize.width, frameSize.height)];
         [swapView addSubview:imageView];
@@ -323,21 +323,21 @@
 
 -(void) displayMovie:(TSMedia*)item
     {
-    //NSLog(@"displayMovie:%@", [item name]);    	
+    NSLog(@"displayMovie:%@", [item name]);    	
 	
 	if (ThumbnailType == currentDisplayMode)
         {
-        //NSLog(@"Swapping out thumbnail view");
+        NSLog(@"Swapping out thumbnail view");
         [[thumbnailView retain] removeFromSuperview];
         }
 	if (ImageType == currentDisplayMode)
         {
-        //NSLog(@"Swapping out movie view");
+        NSLog(@"Swapping out movie view");
         [[movieView retain] removeFromSuperview];
         }
     if (MovieType != currentDisplayMode)
         {
-        //NSLog(@"Swapping in image view");
+        NSLog(@"Swapping in image view");
         NSSize frameSize = [swapView frame].size;
         [movieView setFrame:NSMakeRect(0.0, 0.0, frameSize.width, frameSize.height)];
         [swapView addSubview:movieView];
@@ -352,7 +352,7 @@
 
 -(void) displayInfo:(TSMedia*)item
     {
-    //NSLog(@"displayInfo:%@", [item name]);    	
+    NSLog(@"displayInfo:%@", [item name]);    	
 	NSWindow *detailWindow = [[NSWindow alloc] 
 		initWithContentRect:NSMakeRect(50,50,200,300) 
 		styleMask:NSTitledWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask|NSResizableWindowMask
@@ -397,7 +397,7 @@
 	index = [selectedIndexes lastIndex];
 	if (index < [collection size] - 1)
 		{
-		//NSLog(@"setting selected index to %d", index+1);
+		NSLog(@"setting selected index to %d", index+1);
 		[selectedIndexes release];
 		selectedIndexes = [[NSIndexSet indexSetWithIndex:index+1] retain];
 		//[photoView setNeedsDisplay:YES];
