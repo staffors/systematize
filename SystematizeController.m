@@ -398,7 +398,7 @@
 	index = [selectedIndexes lastIndex];
 	if (index < [collection size] - 1)
 		{
-		NSLog(@"setting selected index to %d", index+1);
+		NSLog(@"setting selected index to %d", (int) (index+1));
 		[selectedIndexes release];
 		selectedIndexes = [[NSIndexSet indexSetWithIndex:index+1] retain];
 		//[photoView setNeedsDisplay:YES];

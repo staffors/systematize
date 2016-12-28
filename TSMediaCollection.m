@@ -69,7 +69,7 @@
 				}
 			}
 		}
-	NSLog(@" - found %d matches", [indexesToDelete count]);
+	NSLog(@" - found %d matches", (int) [indexesToDelete count]);
 	// iterate down through the indexesToDelete, removing them as we go
 	unsigned long index = [indexesToDelete lastIndex];
 	while (index != NSNotFound)
