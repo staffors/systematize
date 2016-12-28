@@ -61,107 +61,125 @@
 		// load attributes
 		NSFileManager* fileManager = [NSFileManager defaultManager];
 		NSDictionary* fileAttributes = [fileManager attributesOfItemAtPath:[[self fullPath] absoluteString] error:nil];
-		creationDate = [[fileAttributes objectForKey:NSFileCreationDate] retain];
-		modificationDate = [[fileAttributes objectForKey:NSFileModificationDate] retain];
-		fileSize = [[fileAttributes objectForKey:NSFileSize] retain];
+		creationDate = (NSDate *) [fileAttributes[NSFileCreationDate] retain];
+		modificationDate = (NSDate *) [fileAttributes[NSFileModificationDate] retain];
+		fileSize = [fileAttributes[NSFileSize] retain];
 		
         if ([self isImage])
             {
-			// use ImageIO to get a CGImageRef for a file at a given path which we can use to load exif data
-			NSURL * url = [self fullPath];
-			NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys: (id)kCFBooleanTrue, (id)kCGImageSourceShouldCache, (id)kCFBooleanTrue, (id)kCGImageSourceShouldAllowFloat, NULL];
-			CGImageSourceRef sourceRef = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
-			meta = (NSDictionary*)CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, (CFDictionaryRef)options);
-			[meta retain];
-			
-			/*
-			NSLog(@"Meta information for file: %@", [self fullPath]);
-			NSEnumerator *enumerator = [meta keyEnumerator];
-			id key;
-			while ((key = [enumerator nextObject])) 
-				{
-				NSLog(@"%@=%@", key, [meta objectForKey:key]); 
-				}
-			*/
-			
-			
-			//Could we use CoreGraphics to load the thumbnail and would it be faster?
-			NSDictionary* thumbOpts = [NSDictionary dictionaryWithObjectsAndKeys:
-				(id)kCFBooleanTrue, (id)kCGImageSourceCreateThumbnailWithTransform,
-				(id)kCFBooleanTrue, (id)kCGImageSourceCreateThumbnailFromImageAlways,
-				[NSNumber numberWithInt:512], (id)kCGImageSourceThumbnailMaxPixelSize, 
-				nil];
-			CGImageRef cgImageRef = CGImageSourceCreateThumbnailAtIndex(sourceRef, 0, (CFDictionaryRef)thumbOpts);
-                    
-			// make image thumbnail
-			CIImage *ciImage = [CIImage imageWithCGImage:cgImageRef];
-			CGRect extent = [ciImage extent];
-			//Be careful here.  A CIImage can have infinite extent.  The following is OK only if you know your CIImage is of finite extent.
-			thumbnail = [[NSImage alloc] initWithSize:NSMakeSize(extent.size.width, extent.size.height)];
-			NSCIImageRep *ciImageRep = [NSCIImageRep imageRepWithCIImage:ciImage];
-			[thumbnail addRepresentation:ciImageRep];
-			
-			CFRelease(sourceRef);
-		
-			
-			// now load the image and generate scaled versions
-            //sourceImage = [[NSImage alloc] initWithContentsOfFile:[self fullPath]];
-			//fastImage = [[self getOrientedImage:[sourceImage imageScaledToMaxDimension:800]] retain];
-			//thumbnail = [[fastImage imageScaledToMaxDimension:200] retain];
-			//thumbnail = [[self getOrientedImage:[sourceImage imageScaledToMaxDimension:200]] retain];
-			fastImage = [thumbnail retain];
+            [self loadImageData];
             }
         else
             {
-            NSURL * url = [self fullPath];
-			NSError* loadingError = nil;
-            movie = [[AVURLAsset alloc] initWithURL:url options:nil];
-                
-			if (!movie && loadingError)
-				{
-				NSLog(@"failed to load movie description: %@", [loadingError localizedDescription]);
-				NSLog(@"failed to load movie reason: %@", [loadingError localizedFailureReason]);
-				}
-            AVAssetImageGenerator* imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:movie];
-            [movie loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler:
-                ^{
-                if ([movie statusOfValueForKey:@"tracks" error:NULL] != AVKeyValueStatusLoaded)
-                    {
-                    return;
-                    }
-                
-                NSArray *visualTracks = [movie tracksWithMediaCharacteristic:AVMediaCharacteristicVisual];
-                NSArray *audibleTracks = [movie tracksWithMediaCharacteristic:AVMediaCharacteristicAudible];
-                if ([visualTracks count] > 0)
-                    {
-                    // Grab the first frame from the asset and display it
-                    [imageGenerator generateCGImagesAsynchronouslyForTimes:[NSArray arrayWithObject:[NSValue valueWithCMTime:kCMTimeZero]] completionHandler:^(CMTime requestedTime, CGImageRef image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error) {
-                        if (result == AVAssetImageGeneratorSucceeded)
-                            {
-                            fastImage = [[NSImage alloc] initWithCGImage:image size:NSZeroSize];
-                            }
-                        else
-                            {
-                            fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
-                            }
-                    }];
-                }
-                else if ([audibleTracks count] > 0)
-                    {
-                    fastImage = [NSImage imageNamed:@"AudioOnly2x"];
-                    }
-                else
-                    {
-                    fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
-                    }
-            }];
-                
-			thumbnail = [[fastImage imageScaledToMaxDimension:200] retain];
+            [self loadMovieData];
             }
         loaded = YES;
         }
     }
-    
+
+
+
+
+- (void) loadImageData
+    {
+    // use ImageIO to get a CGImageRef for a file at a given path which we can use to load exif data
+    NSURL * url = [self fullPath];
+    NSDictionary* options = @{
+            (id) kCGImageSourceShouldCache: (id) kCFBooleanTrue,
+            (id) kCGImageSourceShouldAllowFloat: (id) kCFBooleanTrue
+    };
+    CGImageSourceRef sourceRef = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
+    meta = (NSDictionary*)CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, (CFDictionaryRef)options);
+    [meta retain];
+
+    /*
+    NSLog(@"Meta information for file: %@", [self fullPath]);
+    NSEnumerator *enumerator = [meta keyEnumerator];
+    id key;
+    while ((key = [enumerator nextObject]))
+        {
+        NSLog(@"%@=%@", key, [meta objectForKey:key]);
+        }
+    */
+
+
+    //Could we use CoreGraphics to load the thumbnail and would it be faster?
+    NSDictionary* thumbOpts = @{
+					(id) kCGImageSourceCreateThumbnailWithTransform: (id) kCFBooleanTrue,
+					(id) kCGImageSourceCreateThumbnailFromImageAlways: (id) kCFBooleanTrue,
+					(id) kCGImageSourceThumbnailMaxPixelSize: @512
+			};
+    CGImageRef cgImageRef = CGImageSourceCreateThumbnailAtIndex(sourceRef, 0, (CFDictionaryRef)thumbOpts);
+
+    // make image thumbnail
+    CIImage *ciImage = [CIImage imageWithCGImage:cgImageRef];
+    CGRect extent = [ciImage extent];
+    //Be careful here.  A CIImage can have infinite extent.  The following is OK only if you know your CIImage is of finite extent.
+    thumbnail = [[NSImage alloc] initWithSize:NSMakeSize(extent.size.width, extent.size.height)];
+    NSCIImageRep *ciImageRep = [NSCIImageRep imageRepWithCIImage:ciImage];
+    [thumbnail addRepresentation:ciImageRep];
+
+    CFRelease(sourceRef);
+
+
+    // now load the image and generate scaled versions
+    //sourceImage = [[NSImage alloc] initWithContentsOfFile:[self fullPath]];
+    //fastImage = [[self getOrientedImage:[sourceImage imageScaledToMaxDimension:800]] retain];
+    //thumbnail = [[fastImage imageScaledToMaxDimension:200] retain];
+    //thumbnail = [[self getOrientedImage:[sourceImage imageScaledToMaxDimension:200]] retain];
+    fastImage = [thumbnail retain];
+    }
+
+
+
+
+- (void) loadMovieData
+    {
+    NSURL * url = [self fullPath];
+    self->movie = [[AVURLAsset alloc] initWithURL:url options:nil];
+    AVAssetImageGenerator* imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:self->movie];
+    [self->movie loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:
+            ^
+            {
+            NSError *loadingError = nil;
+            if ([self->movie statusOfValueForKey:@"tracks" error:&loadingError] != AVKeyValueStatusLoaded)
+                {
+                NSLog(@"failed to load movie description: %@", [loadingError localizedDescription]);
+                NSLog(@"failed to load movie reason: %@", [loadingError localizedFailureReason]);
+                return;
+                }
+
+            NSArray *visualTracks = [self->movie tracksWithMediaCharacteristic:AVMediaCharacteristicVisual];
+            if ([visualTracks count] > 0)
+                {
+                // Grab the first frame from the asset and display it
+                [imageGenerator generateCGImagesAsynchronouslyForTimes:@[[NSValue valueWithCMTime:kCMTimeZero]] completionHandler:
+                        ^(CMTime requestedTime, CGImageRef image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error)
+                        {
+                        if (result == AVAssetImageGeneratorSucceeded)
+                            {
+                            self->fastImage = [[NSImage alloc] initWithCGImage:image size:NSZeroSize];
+                            }
+                        else
+                            {
+                            self->fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
+                            }
+                        }];
+                }
+            else if ([[self->movie tracksWithMediaCharacteristic:AVMediaCharacteristicAudible] count] > 0)
+                {
+                self->fastImage = [NSImage imageNamed:@"AudioOnly2x"];
+                }
+            else
+                {
+                self->fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
+                }
+            }];
+
+    self->thumbnail = [self->fastImage retain];
+    }
+
+
 
 
 
@@ -390,23 +408,15 @@
 //
 -(BOOL) isImage;
 	{
-	if ([self getMediaType] == ImageType)
-		{
-		return YES;
-		}
-	return NO;
-	}
+    return [self getMediaType] == ImageType;
+    }
 	
     
 
 -(BOOL) isMovie;
 	{
-	if ([self getMediaType] == MovieType)
-		{
-		return YES;
-		}
-	return NO;
-	}
+    return [self getMediaType] == MovieType;
+    }
 	
     
 
