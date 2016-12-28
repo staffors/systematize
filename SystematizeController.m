@@ -108,7 +108,6 @@
             }
         else if (![isDirectory boolValue])
             {
-			NSLog(@"  found file");
 			TSMedia* media = [TSMedia initWithPath:directoryURL name:[fileURL lastPathComponent]];
 			[media loadData];
             [collection addObject:media];
