@@ -87,6 +87,7 @@
 	[progressBar setMinValue:0];
 	[progressBar setMaxValue:maxItems];
     NSEnumerator* e = [directoryContents objectEnumerator];
+
     NSURL *fileURL;
     while (fileURL = (NSURL*)[e nextObject])
         {
@@ -100,13 +101,14 @@
         [fileURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
             
         NSError *err;
-        if ([fileURL checkResourceIsReachableAndReturnError:&err] == NO)
+        if (![fileURL checkResourceIsReachableAndReturnError:&err])
             {
             [[NSAlert alertWithError:err] runModal];
             continue;
             }
-        else if ([isDirectory boolValue] == YES)
+        else if (![isDirectory boolValue])
             {
+			NSLog(@"  found file");
 			TSMedia* media = [TSMedia initWithPath:directoryURL name:[fileURL lastPathComponent]];
 			[media loadData];
             [collection addObject:media];
