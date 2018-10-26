@@ -55,12 +55,12 @@
     NSString* picturesDirectoryPath = [@"~/Pictures/Pictures" stringByExpandingTildeInPath];
     [openPanel setDirectoryURL:[NSURL fileURLWithPath:picturesDirectoryPath]];
     
-    unsigned long result = [openPanel runModal];
+    NSModalResponse result = [openPanel runModal];
     
     if (result == NSFileHandlingPanelOKButton)
         {
         NSArray* filesToOpen = [openPanel URLs];
-        NSURL* directoryURL = [[filesToOpen objectAtIndex:0] retain];
+        NSURL* directoryURL = [[filesToOpen[0] retain] autorelease];
         [collection setCurrentDirectory:directoryURL];
 		[self loadFileListForDirectory:directoryURL];
 		[collection filterForMoviesWithThumbnailImages];
@@ -129,13 +129,13 @@
 	NSLog(@"processNow");
 
     
-    NSAlert *alertPanel = [[NSAlert alloc] init];
+    NSAlert *alertPanel = [[[NSAlert alloc] init] autorelease];
     [alertPanel addButtonWithTitle:@"Proceed"];
     [alertPanel addButtonWithTitle:@"Cancel"];
     [alertPanel setMessageText:@"Proceed with processing?"];
     [alertPanel setInformativeText:@"Proceeding will cause the pictures to be renamed and reordered as specified, and will exit Systematize."];
     [alertPanel setAlertStyle:NSWarningAlertStyle];
-	unsigned long result = [alertPanel runModal];
+	NSModalResponse result = [alertPanel runModal];
 
 	if (result == NSAlertFirstButtonReturn)
 		{
@@ -156,7 +156,7 @@
 			}
 		
 		[progressBarPanel orderOut:nil];
-        NSAlert *confirmPanel = [[NSAlert alloc] init];
+        NSAlert *confirmPanel = [[[NSAlert alloc] init] autorelease];
         [confirmPanel addButtonWithTitle:@"Quit"];
         [confirmPanel setMessageText:@"Finished Processing"];
         [confirmPanel setInformativeText:[NSString stringWithFormat:@"Renamed %lu images to directory:\n%@", [collection size], [collection currentDirectory]]];
@@ -258,11 +258,11 @@
 - (void)keyDown:(NSEvent *)theEvent;
 	{
 	NSLog(@"got a keyDown event");
-	[self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
+	[self interpretKeyEvents:@[theEvent]];
 	}
 
 
-- (void)cancelOperation:(id)sender;
+- (void) cancelOperation:(id)sender;
 	{
 	NSLog(@"cancelOperation");
 	if (ThumbnailType == currentDisplayMode)
@@ -355,22 +355,22 @@
 -(void) displayInfo:(TSMedia*)item
     {
     NSLog(@"displayInfo:%@", [item name]);    	
-	NSWindow *detailWindow = [[NSWindow alloc] 
-		initWithContentRect:NSMakeRect(50,50,200,300) 
-		styleMask:NSTitledWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask|NSResizableWindowMask
-		backing:NSBackingStoreBuffered 
-		defer:YES];
+	NSWindow *detailWindow = [[[NSWindow alloc]
+			initWithContentRect:NSMakeRect(50, 50, 200, 300)
+					  styleMask:NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask
+						backing:NSBackingStoreBuffered
+						  defer:YES] autorelease];
 	[detailWindow setTitle:[item baseName]];
 	//[detailWindow setDelegate:self];
 
 	NSSize frameSize = [[detailWindow contentView] frame].size;
-	NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:NSMakeRect(0.0, 0.0, frameSize.width, frameSize.height)];
+	NSScrollView *scrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(0.0, 0.0, frameSize.width, frameSize.height)] autorelease];
 	[scrollView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
 	[scrollView setFrameOrigin:NSMakePoint(0.0, 0.0)];
 	[scrollView setAutohidesScrollers:YES];
 
 	NSSize scrollViewFrameSize = [[scrollView contentView] frame].size;
-	NSTextView *textView = [[NSTextView alloc] initWithFrame:NSMakeRect(0.0, 0.0, scrollViewFrameSize.width, scrollViewFrameSize.height)];
+	NSTextView *textView = [[[NSTextView alloc] initWithFrame:NSMakeRect(0.0, 0.0, scrollViewFrameSize.width, scrollViewFrameSize.height)] autorelease];
 	[textView setFrameOrigin:NSMakePoint(0.0, 0.0)];
 	[textView setEditable:NO];
 	[textView setSelectable:NO];
@@ -430,27 +430,27 @@
 //
 // MUPhotoView delegate methods
 //
-- (unsigned long)photoCountForPhotoView:(MUPhotoView *)view;
+- (unsigned int) photoCountForPhotoView:(MUPhotoView *)view;
 	{
-	return [collection size];
+	return (unsigned int) [collection size];
 	}
 	
 	
-- (NSImage *)photoView:(MUPhotoView *)view photoAtIndex:(unsigned long)index;
+- (NSImage *)photoView:(MUPhotoView *)view photoAtIndex:(unsigned int)index;
 	{
 	return [[collection objectAtIndex:index] thumbnail];
 	}
 	
 
 	
-- (NSImage *)photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned long)index;
+- (NSImage *)photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned int)index;
 	{
 	return nil;
 	//return [[collection objectAtIndex:index] thumbnail];
 	}
 	
 	
-- (TSMedia *)photoView:(MUPhotoView *)view objectAtIndex:(unsigned long)index;
+- (TSMedia *)photoView:(MUPhotoView *)view objectAtIndex:(unsigned int)index;
 	{
 	return [collection objectAtIndex:index];
 	}
@@ -498,7 +498,7 @@
 	}
 	
 
-- (unsigned long)photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal
+- (unsigned int)photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal
 	{
 	if (isLocal)
 		{
@@ -512,22 +512,22 @@
 
 - (NSArray *)pasteboardDragTypesForPhotoView:(MUPhotoView *)view
 	{
-    return [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
+    return @[NSPasteboardTypeFileURL];
 	}
 
-- (NSData *)photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned long)index dataType:(NSString *)type
+- (NSData *)photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned int)index dataType:(NSString *)type
 	{
 	// HMM, how should this work?
     return nil;
 	}
 
 
-- (void)photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned long)insertionIndex;
+- (void)photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned int)insertionIndex;
 	{
 	// we need to ensure that we keep the indexes straight, removing an item from the array changes all indexes greater than it
 	
 	// starting with the max index, remove them into a tmp array, adjust the insertion index if necessary
-	NSMutableArray* tmpArray = [[NSMutableArray alloc] init];
+	NSMutableArray* tmpArray = [[[NSMutableArray alloc] init] autorelease];
 	unsigned long localInsertionIndex = insertionIndex;
 	unsigned long index = [selectedPhotoIndexes lastIndex];
 	while (index != NSNotFound)
@@ -545,7 +545,7 @@
 	unsigned long i;
 	for (i=0; i<[tmpArray count]; i++)
 		{
-		[collection insertObject:[tmpArray objectAtIndex:i] atIndex:localInsertionIndex];
+        [collection insertObject:tmpArray[i] atIndex:localInsertionIndex];
 		}
 	// to avoid leaking memory
 	[tmpArray removeAllObjects];
@@ -553,7 +553,7 @@
 	
 
 
-- (void)photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned long)index;
+- (void)photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned int)index;
 	{
     TSMedia* mediaItem = [collection objectAtIndex:index];
 	if ([mediaItem getMediaType] == ImageType)

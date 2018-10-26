@@ -6,13 +6,13 @@
 
 -(NSString *)asPlainStringWithPrefix:(NSString *)prefix;
 	{
-	NSMutableString* str = [[NSMutableString alloc] init];
-	int i;
+	NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+	NSUInteger i;
 	NSArray* keys = [self allKeys];
     for (i=0; i<[keys count]; i++)
 		{
-        NSString* key = [keys objectAtIndex:i];
-        id value = [self objectForKey:key];
+        NSString* key = keys[i];
+        id value = self[key];
 
         if ([value isKindOfClass:[NSDictionary class]])
 			{
@@ -42,12 +42,12 @@
 			[str appendString:prefix];
 			[str appendString:key];
 			[str appendString:@"\n"];
-			int j;
+			NSUInteger j;
 			for (j=0; j<[value count]; j++)
 				{
 				[str appendString:prefix];
 				[str appendString:@"    "];
-				id subValue = [value objectAtIndex:j];
+				id subValue = (id) [value objectAtIndex:j];
 				if ([subValue isKindOfClass:[NSNumber class]])
 					{
 					[str appendString:[subValue stringValue]];

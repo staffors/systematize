@@ -99,7 +99,7 @@
     [textStorage addLayoutManager:layoutManager];
     [layoutManager release];
 
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+    [self registerForDraggedTypes:@[NSPasteboardTypeFileURL]];
 
     return self;
     }
@@ -228,9 +228,9 @@
         while (labelSize.width > gridRect.size.width)
             {
             // label is too long so figure out how much shorter it needs to be
-            float labelSizeRatio = gridRect.size.width / labelSize.width;
-            NSMutableString *newLabel = [[NSMutableString alloc] initWithString:[[self mediaAtIndex:index] displayName]];
-            int newLength = ([newLabel length] * labelSizeRatio) - 4;
+            CGFloat labelSizeRatio = gridRect.size.width / labelSize.width;
+            NSMutableString *newLabel = [[[NSMutableString alloc] initWithString:[[self mediaAtIndex:index] displayName]] autorelease];
+            NSUInteger newLength = (NSUInteger) ([newLabel length] * labelSizeRatio) - 4;
             // now truncate string to that length and add an elipsis
             [newLabel deleteCharactersInRange:NSMakeRange(newLength, [newLabel length] - newLength)];
             [newLabel appendString:@"..."];
@@ -238,15 +238,15 @@
             labelSize = [textStorage size];
             }
         // center it horizontally
-        float horizLabelOffset = labelSize.width / 2;
-        float gridXMiddle = gridRect.origin.x + (gridRect.size.width / 2);
-        float xOrigin = gridXMiddle - horizLabelOffset;
+        CGFloat horizLabelOffset = labelSize.width / 2;
+        CGFloat gridXMiddle = gridRect.origin.x + (gridRect.size.width / 2);
+        CGFloat xOrigin = gridXMiddle - horizLabelOffset;
         // align below bottom of picture
-        float yOrigin = photoRect.origin.y + photoRect.size.height + 5;
+        CGFloat yOrigin = photoRect.origin.y + photoRect.size.height + 5;
         NSPoint drawPoint = NSMakePoint(xOrigin, yOrigin);
         // now draw it
         NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
-        [self lockFocus];
+        [self lockFocusIfCanDraw];
         [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:drawPoint];
         [self unlockFocus];
 
@@ -305,10 +305,10 @@
         [noShadow set];
         [[NSColor whiteColor] set];
 
-        float minX = (mouseDownPoint.x < mouseCurrentPoint.x) ? mouseDownPoint.x : mouseCurrentPoint.x;
-        float minY = (mouseDownPoint.y < mouseCurrentPoint.y) ? mouseDownPoint.y : mouseCurrentPoint.y;
-        float maxX = (mouseDownPoint.x > mouseCurrentPoint.x) ? mouseDownPoint.x : mouseCurrentPoint.x;
-        float maxY = (mouseDownPoint.y > mouseCurrentPoint.y) ? mouseDownPoint.y : mouseCurrentPoint.y;
+        CGFloat minX = (mouseDownPoint.x < mouseCurrentPoint.x) ? mouseDownPoint.x : mouseCurrentPoint.x;
+        CGFloat minY = (mouseDownPoint.y < mouseCurrentPoint.y) ? mouseDownPoint.y : mouseCurrentPoint.y;
+        CGFloat maxX = (mouseDownPoint.x > mouseCurrentPoint.x) ? mouseDownPoint.x : mouseCurrentPoint.x;
+        CGFloat maxY = (mouseDownPoint.y > mouseCurrentPoint.y) ? mouseDownPoint.y : mouseCurrentPoint.y;
         NSRect selectionRectangle = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
         [NSBezierPath strokeRect:selectionRectangle];
 
@@ -548,7 +548,7 @@
     // update internal grid size, adjust height based on the new grid size
     // to make sure the same photos stay in view, get a visible photos' index, then scroll to that photo after the update
     NSRect visibleRect = [self visibleRect];
-    float heightRatio = visibleRect.origin.y / [self frame].size.height;
+    CGFloat heightRatio = visibleRect.origin.y / [self frame].size.height;
     visibleRect.origin.y = heightRatio * [self frame].size.height;
     [self scrollRectToVisible:visibleRect];
 
@@ -589,7 +589,7 @@
 
     // update internal grid size, adjust height based on the new grid size
     NSRect visibleRect = [self visibleRect];
-    float heightRatio = visibleRect.origin.y / [self frame].size.height;
+    CGFloat heightRatio = visibleRect.origin.y / [self frame].size.height;
     visibleRect.origin.y = heightRatio * [self frame].size.height;
     [self scrollRectToVisible:visibleRect];
     [self setNeedsDisplayInRect:[self visibleRect]];
@@ -625,7 +625,7 @@
 
     // update internal grid size, adjust height based on the new grid size
     NSRect visibleRect = [self visibleRect];
-    float heightRatio = visibleRect.origin.y / [self frame].size.height;
+    CGFloat heightRatio = visibleRect.origin.y / [self frame].size.height;
     visibleRect.origin.y = heightRatio * [self frame].size.height;
     [self scrollRectToVisible:visibleRect];
     [self setNeedsDisplayInRect:[self visibleRect]];
@@ -1086,7 +1086,7 @@
     {
     //NSLog(@"dragging exited: index = %u", insertionRectIndex);
     unsigned long lastRectIndex = insertionRectIndex;
-    insertionRectIndex = -1;
+    insertionRectIndex = (unsigned long) -1;
     [self setNeedsDisplayInRect:[self gridRectForIndex:lastRectIndex]];
     }
 
@@ -1129,7 +1129,7 @@
         //[delegate photoView:self didSetSelectionIndexes:indexes];
         }
     //re-draw the view with our new data
-    insertionRectIndex = -1;
+    insertionRectIndex = (unsigned long) -1;
     [self setNeedsDisplay:YES];
     }
 
@@ -1196,7 +1196,7 @@
             }
         }
 
-    [self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
+    [self interpretKeyEvents:@[theEvent]];
     }
 
 
@@ -1493,7 +1493,7 @@
 
 - (void)moveToEndOfDocumentAndModifySelection:(id)sender
     {
-    NSMutableIndexSet *indexes = [[self selectionIndexes] mutableCopy];
+    NSMutableIndexSet *indexes = [[[self selectionIndexes] mutableCopy] autorelease];
     if ([indexes count] > 0)
         {
         [indexes addIndexesInRange:NSMakeRange([indexes lastIndex], ([self photoCount] - [indexes lastIndex]))];
@@ -1549,7 +1549,7 @@
     }
 
 // drag and drop
-- (unsigned int)photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal
+- (NSDragOperation) photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal
     {
     return NSDragOperationNone;
     }
@@ -1618,7 +1618,7 @@
     //NSLog(@"renamePhotos");
     [self updateGridAndFrame];
     unsigned long index = [selectedIndexes firstIndex];
-    NSString *displayName = [[[delegate photoView:self objectAtIndex:(unsigned int) index] displayName] retain];
+    NSString *displayName = [[[[delegate photoView:self objectAtIndex:(unsigned int) index] displayName] retain] autorelease];
     [editorTextField setStringValue:displayName];
     [editorTextField selectText:self];
     [self addSubview:editorTextField];
@@ -1633,11 +1633,11 @@
     NSRect editorFrame = [editorTextField frame];
     //NSLog(@"oldFrame rect = %f %f %f %f", editorFrame.origin.x, editorFrame.origin.y, editorFrame.size.width, editorFrame.size.height);
     // center it horizontally
-    float horizOffset = editorFrame.size.width / 2;
-    float gridXMiddle = gridRect.origin.x + (gridRect.size.width / 2);
-    float xOrigin = gridXMiddle - horizOffset;
+    CGFloat horizOffset = editorFrame.size.width / 2;
+    CGFloat gridXMiddle = gridRect.origin.x + (gridRect.size.width / 2);
+    CGFloat xOrigin = gridXMiddle - horizOffset;
     // align below bottom of picture
-    float yOrigin = photoRect.origin.y + photoRect.size.height + 5;
+    CGFloat yOrigin = photoRect.origin.y + photoRect.size.height + 5;
 
     NSRect newFrame = NSMakeRect(xOrigin, yOrigin, editorFrame.size.width, editorFrame.size.height);
     //NSLog(@"new frame = %f %f %f %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
@@ -1710,7 +1710,7 @@
 
 - (void)setFrame:(NSRect)frame
     {
-    float width = [self frame].size.width;
+    CGFloat width = [self frame].size.width;
     [super setFrame:frame];
 
     if (width != frame.size.width)
@@ -1736,15 +1736,15 @@
         {
         columns = 0;
         rows = 0;
-        float width = [self frame].size.width;
-        float height = [[[self enclosingScrollView] contentView] frame].size.height;
+        CGFloat width = [self frame].size.width;
+        CGFloat height = [[[self enclosingScrollView] contentView] frame].size.height;
         [self setFrameSize:NSMakeSize(width, height)];
         return;
         }
 
     // calculate the number of columns (ivar)
-    float width = [self frame].size.width;
-    columns = width / gridSize.width;
+    CGFloat width = [self frame].size.width;
+    columns =(unsigned long) (width / gridSize.width);
 
     // minimum 1 column
     if (1 > columns)
@@ -1768,7 +1768,7 @@
         rows++;
         }
     // adjust my frame height to contain all the photos
-    float height = rows * gridSize.height;
+    CGFloat height = rows * gridSize.height;
     NSScrollView *scroll = [self enclosingScrollView];
     if ((nil != scroll) && (height < [[scroll contentView] frame].size.height))
         {
@@ -1803,7 +1803,7 @@
     {
     if ((nil != [self photosArray]) && (index < [self photoCount]))
         {
-        return [[self photosArray] objectAtIndex:index];
+        return [self photosArray][index];
         }
     else if ((nil != delegate) && (index < [self photoCount]))
         {
@@ -1820,7 +1820,7 @@
     {
     if ((nil != [self photosArray]) && (index < [self photoCount]))
         {
-        return [[self photosArray] objectAtIndex:index];
+        return [self photosArray][index];
         }
     else if ((nil != delegate) && (index < [self photoCount]))
         {
@@ -1867,13 +1867,13 @@
 // placement and hit detection
 - (NSSize)scaledPhotoSizeForSize:(NSSize)size
     {
-    float longSide = size.width;
+    CGFloat longSide = size.width;
     if (longSide < size.height)
         {
         longSide = size.height;
         }
 
-    float scale = [self photoSize] / longSide;
+    CGFloat scale = [self photoSize] / longSide;
 
     NSSize scaledSize;
     scaledSize.width = size.width * scale;
@@ -1898,8 +1898,8 @@
 
 - (unsigned long)photoIndexForPoint:(NSPoint)point
     {
-    unsigned column = point.x / gridSize.width;
-    unsigned row = point.y / gridSize.height;
+    unsigned int column = (unsigned int) (point.x / gridSize.width);
+    unsigned int row = (unsigned int) (point.y / gridSize.height);
 
     return ((row * columns) + column);
     }
@@ -1922,16 +1922,16 @@
     {
     unsigned long row = index / columns;
     unsigned long column = index % columns;
-    float x = column * gridSize.width;
-    float y = row * gridSize.height;
+    CGFloat x = column * gridSize.width;
+    CGFloat y = row * gridSize.height;
 
     return NSMakeRect(x, y, gridSize.width, gridSize.height);
     }
 
 - (NSRect)rectCenteredInRect:(NSRect)rect withSize:(NSSize)size
     {
-    float x = rect.origin.x + ((rect.size.width - size.width) / 2);
-    float y = rect.origin.y + ((rect.size.height - size.height) / 2);
+    CGFloat x = rect.origin.x + ((rect.size.width - size.width) / 2);
+    CGFloat y = rect.origin.y + ((rect.size.height - size.height) / 2);
 
     return NSMakeRect(x, y, size.width, size.height);
     }
@@ -2048,12 +2048,12 @@
     NSRect inset = NSInsetRect(rect, 5.0, 5.0);
     float radius = 15.0;
 
-    float minX = NSMinX(inset);
-    float midX = NSMidX(inset);
-    float maxX = NSMaxX(inset);
-    float minY = NSMinY(inset);
-    float midY = NSMidY(inset);
-    float maxY = NSMaxY(inset);
+    CGFloat minX = NSMinX(inset);
+    CGFloat midX = NSMidX(inset);
+    CGFloat maxX = NSMaxX(inset);
+    CGFloat minY = NSMinY(inset);
+    CGFloat midY = NSMidY(inset);
+    CGFloat maxY = NSMaxY(inset);
 
     NSBezierPath *path = [[NSBezierPath alloc] init];
     [path moveToPoint:NSMakePoint(midX, minY)];

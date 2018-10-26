@@ -73,18 +73,18 @@
 
 
 // MUPhotoView delegate methods
-- (unsigned long) photoCountForPhotoView:(MUPhotoView *)view;
-- (NSImage *) photoView:(MUPhotoView *)view photoAtIndex:(unsigned long)index;
-- (NSImage *) photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned long)index;
-- (TSMedia *) photoView:(MUPhotoView *)view objectAtIndex:(unsigned long)index;
+- (unsigned int) photoCountForPhotoView:(MUPhotoView *)view;
+- (NSImage *) photoView:(MUPhotoView *)view photoAtIndex:(unsigned int)index;
+- (NSImage *) photoView:(MUPhotoView *)view fastPhotoAtIndex:(unsigned int)index;
+- (TSMedia *) photoView:(MUPhotoView *)view objectAtIndex:(unsigned int)index;
 - (NSIndexSet *) selectionIndexesForPhotoView:(MUPhotoView *)view;
 - (NSIndexSet *) photoView:(MUPhotoView *)view willSetSelectionIndexes:(NSIndexSet *)indexes;
 - (void) photoView:(MUPhotoView *)view didSetSelectionIndexes:(NSIndexSet *)indexes;
-- (unsigned long) photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal;
+- (unsigned int) photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal;
 - (NSArray *) pasteboardDragTypesForPhotoView:(MUPhotoView *)view;
-- (NSData *) photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned long)index dataType:(NSString *)type;
-- (void) photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned long)insertionIndex;
-- (void) photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned long)index;
+- (NSData *) photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned int)index dataType:(NSString *)type;
+- (void) photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned int)insertionIndex;
+- (void) photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned int)index;
 - (NSIndexSet *) photoView:(MUPhotoView *)view willRemovePhotosAtIndexes:(NSIndexSet *)indexes;
 - (void) photoView:(MUPhotoView *)view didRemovePhotosAtIndexes:(NSIndexSet *)indexes;
 - (void) showInfoForSelectedPhotos;

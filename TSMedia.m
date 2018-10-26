@@ -192,7 +192,7 @@
 
 -(NSImage *) getOrientedImage:(NSImage *)image;
 	{
-	NSNumber* orientationNumber = [meta objectForKey:@"Orientation"];
+	NSNumber* orientationNumber = meta[@"Orientation"];
 	int orientation = 1;
 	if (orientationNumber)
 		{
@@ -224,9 +224,9 @@
     {
 	NSImage* tmpImage = [image copy];
 
-    float width = [tmpImage size].width;
-    float height = [tmpImage size].height;
-    NSImage* targetImage = [[NSImage alloc] initWithSize:[tmpImage size]];
+    CGFloat width = [tmpImage size].width;
+    CGFloat height = [tmpImage size].height;
+    NSImage* targetImage = [[[NSImage alloc] initWithSize:[tmpImage size]] autorelease];
     [targetImage setSize:NSMakeSize(height, width)];
     
     [targetImage lockFocus];
@@ -253,9 +253,9 @@
     {
     NSImage* tmpImage = [image copy];
 
-    float width = [tmpImage size].width;
-    float height = [tmpImage size].height;
-    NSImage* targetImage = [[NSImage alloc] initWithSize:[tmpImage size]];
+    CGFloat width = [tmpImage size].width;
+    CGFloat height = [tmpImage size].height;
+    NSImage* targetImage = [[[NSImage alloc] initWithSize:[tmpImage size]] autorelease];
     [targetImage setSize:NSMakeSize(height, width)];
 
     [targetImage lockFocus];
@@ -394,7 +394,7 @@
         NSURL* newThumbnailPath = [NSURL fileURLWithPath:[targetName trim] relativeToURL:destinationPath];
         NSURL* oldThumbnailPath = [NSURL fileURLWithPath:[[self name] trim] relativeToURL:[self path]];
             
-        NSError* error = nil;
+        error = nil;
         if ([fileManager moveItemAtURL:oldThumbnailPath toURL:newThumbnailPath error:&error])
 			{
 			NSLog(@"thumbnail image moved successfully");
@@ -573,11 +573,11 @@
 	NSArray* components = [[self displayName] componentsSeparatedByString:@"_"];
 	if ([components count] == 1)
 		{
-		return [components objectAtIndex:0];
+		return components[0];
 		}
 	else
 		{
-		if ([[[components objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]] length] == 0)
+		if ([[components[0] stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]] length] == 0)
 			{
 			// first component of name has only numbers, so get rid of it
 			return [[components subarrayWithRange:NSMakeRange(1, [components count]-1)] componentsJoinedByString:@"_"];
@@ -615,7 +615,7 @@
 
 -(NSString *) fileSizeAsString;
 	{
-	unsigned long size = [fileSize longValue];
+	long size = [fileSize longValue];
 	if (size > 999999)
 		{
 		return [NSString stringWithFormat:@"%.2f megabytes", size/1000000.0];

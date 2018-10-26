@@ -18,11 +18,11 @@
 	NSImage *scaledImage = [self copy];
 
 	NSSize currentSize = [self size];
-    float longSide = currentSize.width;
+    CGFloat longSide = currentSize.width;
     if (longSide < currentSize.height)
         longSide = currentSize.height;
-    
-    float scale = maxDimension / longSide;
+
+	CGFloat scale = maxDimension / longSide;
     
     NSSize scaledSize;
     scaledSize.width = currentSize.width * scale;
