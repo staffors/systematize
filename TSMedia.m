@@ -135,6 +135,7 @@
 
 - (void) loadMovieData
     {
+    NSLog(@"Loading movie data");
     NSURL * url = [self fullPath];
     self->movie = [[AVURLAsset alloc] initWithURL:url options:nil];
     AVAssetImageGenerator* imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:self->movie];
@@ -152,31 +153,37 @@
             NSArray *visualTracks = [self->movie tracksWithMediaCharacteristic:AVMediaCharacteristicVisual];
             if ([visualTracks count] > 0)
                 {
+                NSLog(@"Found more than one visualTrack");
                 // Grab the first frame from the asset and display it
                 [imageGenerator generateCGImagesAsynchronouslyForTimes:@[[NSValue valueWithCMTime:kCMTimeZero]] completionHandler:
                         ^(CMTime requestedTime, CGImageRef image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error)
                         {
                         if (result == AVAssetImageGeneratorSucceeded)
                             {
+                            NSLog(@"using iniTWithCGImage");
                             self->fastImage = [[NSImage alloc] initWithCGImage:image size:NSZeroSize];
                             }
                         else
                             {
+                            NSLog(@"error loading 2x");
                             self->fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
                             }
                         }];
                 }
             else if ([[self->movie tracksWithMediaCharacteristic:AVMediaCharacteristicAudible] count] > 0)
                 {
+                NSLog(@"audio only 2x");
                 self->fastImage = [NSImage imageNamed:@"AudioOnly2x"];
                 }
             else
                 {
+                NSLog(@"error loading 2x timestwo");
                 self->fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
                 }
+            NSLog(@"retain on fastImage");
+            self->thumbnail = [self->fastImage retain];
             }];
 
-    self->thumbnail = [self->fastImage retain];
     }
 
 

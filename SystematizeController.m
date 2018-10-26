@@ -10,6 +10,7 @@
 
 -(void) awakeFromNib
     {
+    NSLog(@"awake from nib");
 	[[window windowController] setShouldCascadeWindows:NO];
 	[window setFrameAutosaveName:@"com.techshadow.Systematize"];
 	
