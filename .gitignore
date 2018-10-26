@@ -3,3 +3,5 @@
 build/
 Systematize.xcodeproj/xcuserdata/
 Systematize.xcodeproj/project.xcworkspace/xcuserdata/
+tests/
+
