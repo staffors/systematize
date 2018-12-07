@@ -216,7 +216,7 @@
 
         // draw the current photo
         NSRect imageRect = NSMakeRect(0, 0, [photo size].width, [photo size].height);
-        [photo drawInRect:photoRect fromRect:imageRect operation:NSCompositeCopy fraction:1.0 respectFlipped:YES hints:nil];
+        [photo drawInRect:photoRect fromRect:imageRect operation:NSCompositingOperationCopy fraction:1.0 respectFlipped:YES hints:nil];
 
         // kBorderStyleShadow - remove the shadow after drawing the image
         [noShadow set];
@@ -256,7 +256,7 @@
         if (typeBadge)
             {
             NSRect typeBadgeRect = NSMakeRect(0, 0, [typeBadge size].width, [typeBadge size].height);
-            [typeBadge drawInRect:[self typeRectOfSize:[typeBadge size] inPhotoRect:photoRect] fromRect:typeBadgeRect operation:NSCompositeCopy fraction:1.0 respectFlipped:YES hints:nil];
+            [typeBadge drawInRect:[self typeRectOfSize:[typeBadge size] inPhotoRect:photoRect] fromRect:typeBadgeRect operation:NSCompositingOperationCopy fraction:1.0 respectFlipped:YES hints:nil];
             }
 
         // draw selection border
@@ -717,7 +717,7 @@
 
     if (imageHit)
         {
-        if (flags & NSCommandKeyMask)
+        if (flags & NSEventModifierFlagCommand)
             {
             // Flip current image selection state.
             if ([indexes containsIndex:clickedIndex])
@@ -731,7 +731,7 @@
             }
         else
             {
-            if (flags & NSShiftKeyMask)
+            if (flags & NSEventModifierFlagShift)
                 {
                 // Add range to selection.
                 if ([indexes count] == 0)
@@ -762,7 +762,7 @@
         }
     else
         {
-        if ((flags & NSShiftKeyMask) == 0)
+        if ((flags & NSEventModifierFlagShift) == 0)
             {
             [indexes removeAllIndexes];
             }
@@ -803,7 +803,7 @@
         // draw the drag image as a semi-transparent copy of the image the user dragged, and optionally a red badge indicating the number of photos
         NSImage *dragImage = [[NSImage alloc] initWithSize:scaledSize];
         [dragImage lockFocus];
-        [clickedImage drawInRect:NSMakeRect(0, 0, scaledSize.width, scaledSize.height) fromRect:NSMakeRect(0, 0, [clickedImage size].width, [clickedImage size].height) operation:NSCompositeCopy fraction:0.5 respectFlipped:YES hints:nil];
+        [clickedImage drawInRect:NSMakeRect(0, 0, scaledSize.width, scaledSize.height) fromRect:NSMakeRect(0, 0, [clickedImage size].width, [clickedImage size].height) operation:NSCompositingOperationCopy fraction:0.5 respectFlipped:YES hints:nil];
         [dragImage unlockFocus];
 
         // if there's more than one image, put a badge on the photo
@@ -854,7 +854,7 @@
         if (nil != types)
             {
             // get the pasteboard and register the returned types with delegate as the owner
-            NSPasteboard *pb = [NSPasteboard pasteboardWithName:NSDragPboard];
+            NSPasteboard *pb = [NSPasteboard pasteboardWithName:NSPasteboardNameDrag];
             [pb declareTypes:types owner:delegate];
 
             unsigned long selectedIndex = [[self selectionIndexes] firstIndex];

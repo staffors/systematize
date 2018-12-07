@@ -57,7 +57,7 @@
     
     NSModalResponse result = [openPanel runModal];
     
-    if (result == NSFileHandlingPanelOKButton)
+    if (result == NSModalResponseOK)
         {
         NSArray* filesToOpen = [openPanel URLs];
         NSURL* directoryURL = [[filesToOpen[0] retain] autorelease];
@@ -134,7 +134,7 @@
     [alertPanel addButtonWithTitle:@"Cancel"];
     [alertPanel setMessageText:@"Proceed with processing?"];
     [alertPanel setInformativeText:@"Proceeding will cause the pictures to be renamed and reordered as specified, and will exit Systematize."];
-    [alertPanel setAlertStyle:NSWarningAlertStyle];
+    [alertPanel setAlertStyle:NSAlertStyleWarning];
 	NSModalResponse result = [alertPanel runModal];
 
 	if (result == NSAlertFirstButtonReturn)
@@ -160,7 +160,7 @@
         [confirmPanel addButtonWithTitle:@"Quit"];
         [confirmPanel setMessageText:@"Finished Processing"];
         [confirmPanel setInformativeText:[NSString stringWithFormat:@"Renamed %lu images to directory:\n%@", [collection size], [collection currentDirectory]]];
-        [confirmPanel setAlertStyle:NSWarningAlertStyle];
+        [confirmPanel setAlertStyle:NSAlertStyleWarning];
 		[confirmPanel runModal];
 		[NSApp terminate:self];
 		}
@@ -357,7 +357,7 @@
     NSLog(@"displayInfo:%@", [item name]);    	
 	NSWindow *detailWindow = [[[NSWindow alloc]
 			initWithContentRect:NSMakeRect(50, 50, 200, 300)
-					  styleMask:NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask
+					  styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable
 						backing:NSBackingStoreBuffered
 						  defer:YES] autorelease];
 	[detailWindow setTitle:[item baseName]];
