@@ -246,9 +246,7 @@
         NSPoint drawPoint = NSMakePoint(xOrigin, yOrigin);
         // now draw it
         NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
-        [self lockFocusIfCanDraw];
         [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:drawPoint];
-        [self unlockFocus];
 
 
         // draw type badge
