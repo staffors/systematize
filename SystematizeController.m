@@ -52,7 +52,8 @@
     [openPanel setAllowsMultipleSelection:NO];
     [openPanel setCanChooseFiles:NO];
     [openPanel setCanChooseDirectories:YES];
-    NSString* picturesDirectoryPath = [@"~/Pictures/Pictures" stringByExpandingTildeInPath];
+    //NSString* picturesDirectoryPath = [@"~/Pictures/Pictures" stringByExpandingTildeInPath];
+    NSString* picturesDirectoryPath = [@"~/Programming/systematize/tests" stringByExpandingTildeInPath];
     [openPanel setDirectoryURL:[NSURL fileURLWithPath:picturesDirectoryPath]];
     
     NSModalResponse result = [openPanel runModal];
@@ -473,6 +474,7 @@
 
 - (void)photoView:(MUPhotoView *)view didSetSelectionIndexes:(NSIndexSet *)indexes
 	{
+    NSLog(@"didSetSelectionIndexes %lu", [indexes count]);
 	if ([indexes count] == 0) 
 		{
 		[selectedImagesLabel setStringValue:@""];
@@ -482,10 +484,23 @@
 		}
 	else if ([indexes count] == 1)
 		{
-		[selectedImagesLabel   setStringValue:[[collection objectAtIndex:[indexes firstIndex]] name]];
-		[creationDateLabel     setStringValue:[[[collection objectAtIndex:[indexes firstIndex]] creationDate] description]];
-		[modificationDateLabel setStringValue:[[[collection objectAtIndex:[indexes firstIndex]] modificationDate] description]];
-		[fileSizeLabel         setStringValue:[[collection objectAtIndex:[indexes firstIndex]] fileSizeAsString]];
+        NSLog(@" found one index");
+        NSUInteger index = [indexes firstIndex];
+		[selectedImagesLabel   setStringValue:[[collection objectAtIndex:index] name]];
+		NSDate* creationDate = [[collection objectAtIndex:index] creationDate];
+		NSString* creationDateString = @"";
+		if (creationDate != nil) {
+            creationDateString = [creationDate description];
+		}
+		[creationDateLabel     setStringValue:creationDateString];
+
+		NSDate* modificationDate = [[collection objectAtIndex:index] modificationDate];
+		NSString *modificationDateString = @"";
+		if (modificationDate != nil) {
+			modificationDateString = [modificationDate description];
+		}
+		[modificationDateLabel setStringValue:modificationDateString];
+		[fileSizeLabel         setStringValue:[[collection objectAtIndex:index] fileSizeAsString]];
 		}
 	else
 		{
@@ -517,8 +532,10 @@
 
 - (NSData *)photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned int)index dataType:(NSString *)type
 	{
-	// HMM, how should this work?
-    return nil;
+	TSMedia* selectedPhoto = [collection objectAtIndex:index];
+	NSImage* image = [selectedPhoto thumbnail];
+	NSData* imageData = [image TIFFRepresentation];
+	return imageData;
 	}
 
 

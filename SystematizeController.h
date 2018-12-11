@@ -5,7 +5,6 @@
 @class TSMediaCollection;
 @class TSMedia;
 @class MUPhotoView;
-@class QTMovieView;
 
 @interface SystematizeController : NSResponder
 {

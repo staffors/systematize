@@ -15,7 +15,7 @@
 	NSDate* creationDate;
 	NSDate* modificationDate;
 	NSDate* exifDate;
-	NSNumber* fileSize;
+	unsigned long long int fileSize;
 	
 	NSString* thumbnailName;
 	
@@ -72,7 +72,7 @@
 -(NSString*) displayNameWithNoPrefix;
 -(NSDate *) creationDate;
 -(NSDate *) modificationDate;
--(NSNumber *) fileSize;
+-(unsigned long long int) fileSize;
 -(NSString *) fileSizeAsString;
 -(NSDate *) date;
 -(NSDictionary *)metadata;

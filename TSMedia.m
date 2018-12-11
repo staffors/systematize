@@ -61,9 +61,9 @@
         // load attributes
         NSFileManager* fileManager = [NSFileManager defaultManager];
         NSDictionary* fileAttributes = [fileManager attributesOfItemAtPath:[[self fullPath] absoluteString] error:nil];
-        creationDate = (NSDate *) [fileAttributes[NSFileCreationDate] retain];
-        modificationDate = (NSDate *) [fileAttributes[NSFileModificationDate] retain];
-        fileSize = [fileAttributes[NSFileSize] retain];
+        creationDate = [[fileAttributes fileCreationDate] retain];
+        modificationDate = [[fileAttributes fileModificationDate] retain];
+        fileSize = [fileAttributes fileSize];
 
         if ([self isImage])
             {
@@ -606,27 +606,26 @@
 
 
 
--(NSNumber *) fileSize;
+-(unsigned long long int) fileSize;
     {
-    return [[fileSize retain] autorelease];
+    return fileSize;
     }
 
 
 
 -(NSString *) fileSizeAsString;
     {
-    long size = [fileSize longValue];
-    if (size > 999999)
+    if (fileSize > 999999)
         {
-        return [NSString stringWithFormat:@"%.2f megabytes", size/1000000.0];
+        return [NSString stringWithFormat:@"%.2f megabytes", fileSize/1000000.0];
         }
-    else if (size > 999)
+    else if (fileSize > 999)
         {
-        return [NSString stringWithFormat:@"%.2f kilobytes", size/1000.0];
+        return [NSString stringWithFormat:@"%.2f kilobytes", fileSize/1000.0];
         }
     else
         {
-        return [NSString stringWithFormat:@"%lu bytes", size];
+        return [NSString stringWithFormat:@"%llu bytes", fileSize];
         }
     }
 
