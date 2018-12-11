@@ -105,6 +105,14 @@
     }
 
 
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context
+    {
+    NSLog(@"draggingSession sourceOperationMaskForDraggingContext");
+    return NSDragOperationMove;
+    }
+
+
+
 - (void)dealloc
     {
     [self setBorderOutlineColor:nil];
@@ -583,7 +591,7 @@
     //NSLog(@"in -setPhotoVerticalSpacing, old value of photoVerticalSpacing: %f, changed to: %f", photoVerticalSpacing, aPhotoVerticalSpacing);
     [self willChangeValueForKey:@"photoVerticalSpacing"];
     photoVerticalSpacing = aPhotoVerticalSpacing;
-    [self didChangeValueForKey:@"photoVertificalSpacing"];
+    [self didChangeValueForKey:@"photoVerticalSpacing"];
 
     // update internal grid size, adjust height based on the new grid size
     NSRect visibleRect = [self visibleRect];
@@ -877,7 +885,8 @@
             p.x = p.x - imageSize.width / 2;
             p.y = p.y + imageSize.height / 2;
 
-            [self dragImage:dragImage at:p offset:NSMakeSize(0, 0) event:event pasteboard:pb source:self slideBack:YES];
+            NSArray* dragItems = @[dragImage];
+            [self beginDraggingSessionWithItems:dragItems event:event source:self];
             }
 
         [dragImage release];

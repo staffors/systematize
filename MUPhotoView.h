@@ -31,7 +31,8 @@
 //!  that are inside another object - it expects NSImage objects. The first method for providing those objects it by binding an array of NSImage objects to the "photosArray" key of the view.
 //!  If this key has been bound, MUPhotoView will fetch all the images it displays from that binding. The second method is to have a delegate object provide the photos. MUPhotoView will only
 //!  call the delegate's photo methods if the photosArray key has not been bound. Please see the MUPhotoViewDelegate category documentation for descriptions of the methods. 
-@interface MUPhotoView : NSView {
+@interface MUPhotoView : NSView <NSDraggingSource>
+    {
     // Please do not access ivars directly - use the accessor methods documented below
     IBOutlet id delegate;
     
