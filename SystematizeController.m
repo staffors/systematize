@@ -53,7 +53,7 @@
     [openPanel setCanChooseFiles:NO];
     [openPanel setCanChooseDirectories:YES];
     //NSString* picturesDirectoryPath = [@"~/Pictures/Pictures" stringByExpandingTildeInPath];
-    NSString* picturesDirectoryPath = [@"~/Programming/systematize/tests" stringByExpandingTildeInPath];
+    NSString* picturesDirectoryPath = [@"~/Programming/systematize/tests/photos/" stringByExpandingTildeInPath];
     [openPanel setDirectoryURL:[NSURL fileURLWithPath:picturesDirectoryPath]];
     
     NSModalResponse result = [openPanel runModal];
