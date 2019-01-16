@@ -56,11 +56,16 @@
     {
     if (!loaded)
         {
-        NSLog(@" - loading %@", [self name]);
+        NSLog(@" - loading %@", [[self fullPath] path]);
 
         // load attributes
         NSFileManager* fileManager = [NSFileManager defaultManager];
-        NSDictionary* fileAttributes = [fileManager attributesOfItemAtPath:[[self fullPath] absoluteString] error:nil];
+        NSError* error;
+        NSDictionary* fileAttributes = [fileManager attributesOfItemAtPath:[[self fullPath] path] error:&error];
+        if (fileAttributes == nil) {
+            NSAlert *theAlert = [NSAlert alertWithError:error];
+            [theAlert runModal];
+        }
         creationDate = [[fileAttributes fileCreationDate] retain];
         modificationDate = [[fileAttributes fileModificationDate] retain];
         fileSize = [fileAttributes fileSize];
