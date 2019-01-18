@@ -33,7 +33,7 @@
 	[photoView setUseShadowSelection:YES];
 	[photoView setUseOutlineBorder:NO];
 	[photoView setBackgroundColor:[NSColor colorWithDeviceRed:0.8 green:0.8 blue:0.8 alpha:1.0]];
-	[photoView setPhotoSize:128.0];
+	[photoView setPhotoSize:256.0];
 	
     collection = [[TSMediaCollection alloc] init];
 	selectedIndexes = [NSIndexSet indexSet];
@@ -65,7 +65,7 @@
         NSLog(@"chose source directory %@", directoryURL);
         [collection setCurrentDirectory:directoryURL];
 		[self loadFileListForDirectory:directoryURL];
-		[collection filterForMoviesWithThumbnailImages];
+        [collection filterForItemsWithSupportingFiles];
         }
     else
         {

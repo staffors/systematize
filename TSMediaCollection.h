@@ -13,7 +13,7 @@
 
 - (void)setCurrentDirectory:(NSURL*)path;
 - (NSURL *)currentDirectory;
-- (void)filterForMoviesWithThumbnailImages;
+- (void)filterForItemsWithSupportingFiles;
 
 - (unsigned long)size;
 - (void)addObject:(TSMedia*)item;
