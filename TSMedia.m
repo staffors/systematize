@@ -7,10 +7,10 @@
 
 +(TSMedia*) initWithPath:(NSURL*)p name:(NSString*)n
     {
-    TSMedia* photo = [[[TSMedia alloc] init] autorelease];
-    [photo setPath:p];
-    [photo setName:n];
-    return photo;
+    TSMedia* media = [[[TSMedia alloc] init] autorelease];
+    [media setPath:p];
+    [media setName:n];
+    return media;
     }
 
 
@@ -62,10 +62,11 @@
         NSFileManager* fileManager = [NSFileManager defaultManager];
         NSError* error;
         NSDictionary* fileAttributes = [fileManager attributesOfItemAtPath:[[self fullPath] path] error:&error];
-        if (fileAttributes == nil) {
+        if (fileAttributes == nil)
+            {
             NSAlert *theAlert = [NSAlert alertWithError:error];
             [theAlert runModal];
-        }
+            }
         creationDate = [[fileAttributes fileCreationDate] retain];
         modificationDate = [[fileAttributes fileModificationDate] retain];
         fileSize = [fileAttributes fileSize];
@@ -74,7 +75,7 @@
             {
             [self loadImageData];
             }
-        else
+        else if ([self isMovie])
             {
             [self loadMovieData];
             }
@@ -87,6 +88,7 @@
 
 - (void) loadImageData
     {
+    NSLog(@"     loading image data");
     // use ImageIO to get a CGImageRef for a file at a given path which we can use to load exif data
     NSURL * url = [self fullPath];
     NSDictionary* options = @{
@@ -140,7 +142,7 @@
 
 - (void) loadMovieData
     {
-    NSLog(@"Loading movie data");
+    NSLog(@"     loading movie data");
     NSURL * url = [self fullPath];
     self->movie = [[AVURLAsset alloc] initWithURL:url options:nil];
     AVAssetImageGenerator* imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:self->movie];
@@ -285,11 +287,12 @@
 
 -(void) addThumbnailInfo:(TSMedia*)item;
     {
-    thumbnailName = [[item name] retain];
-    [fastImage release];
-    [thumbnail release];
-    fastImage = [[item fastImage] retain];
-    thumbnail = [[item thumbnail] retain];
+    // I don't think we actually need to do anything here
+//    thumbnailName = [[item name] retain];
+//    [fastImage release];
+//    [thumbnail release];
+//    fastImage = [[item fastImage] retain];
+//    thumbnail = [[item thumbnail] retain];
     }
 
 
@@ -437,13 +440,17 @@
 
 -(int) getMediaType;
     {
-    if ([[[name pathExtension] lowercaseString] isEqualToString:@"jpg"])
+    if ([[[name pathExtension] lowercaseString] isEqualToString:@"jpg"] || [[[name pathExtension] lowercaseString] isEqualToString:@"heic"])
         {
         return ImageType;
         }
-    else
+    else if ([[[name pathExtension] lowercaseString] isEqualToString:@"mov"] || [[[name pathExtension] lowercaseString] isEqualToString:@"mp4"])
         {
         return MovieType;
+        }
+    else
+        {
+        return UnknownType;
         }
     }
 

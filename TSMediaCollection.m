@@ -39,37 +39,39 @@
 
 
     
-    
-- (void)filterForMoviesWithThumbnailImages;
+
+// Some files have extra data in related files with the same name. We want to track those files and rename them the same
+// as the image or movie file. We also only want to show one entry in the list for both files combined
+- (void)filterForItemsWithSupportingFiles;
 	{
-	NSLog(@"filterForMoviesWithThumbnailImages");
+	NSLog(@"filterForItemsWithSupportingFiles");
 
 	NSMutableIndexSet *indexesToDelete = [[[NSMutableIndexSet alloc] init] autorelease];
 	NSUInteger i;
 	for (i=0; i<[mediaList count]; i++)
 		{
-		TSMedia* movie = mediaList[i];
-		if ([movie isMovie])
+		TSMedia* media = mediaList[i];
+		if ([media isMovie] || [media isImage])
 			{
 			NSUInteger j;
-			for (j=0; j<[mediaList count]; j++)
+			for (j = 0; j < [mediaList count]; j++)
 				{
-				// if we're not looking at the same item as the movie, then see if it has the same basename
+				// if we're not looking at the same item as the media, then see if it has the same basename
 				if (j != i)
 					{
-					TSMedia* item = mediaList[j];
-					if ([[movie baseName] caseInsensitiveCompare:[item baseName]] == NSOrderedSame)
+					TSMedia *item = mediaList[j];
+					if ([[media baseName] caseInsensitiveCompare:[item baseName]] == NSOrderedSame)
 						{
-						// we found a match so remember its index and add its info to the movie item
-						NSLog(@" - adding thumbnail from index %tu for movie %tu", j, i);
-						[movie addThumbnailInfo:item];
+						// we found a match so remember its index and add its info to the media item
+						NSLog(@" - adding thumbnail from index %tu for media %tu (adding %@ to %@)", j, i, [item name], [media name]);
+						[media addThumbnailInfo:item];
 						[indexesToDelete addIndex:j];
 						}
 					}
 				}
 			}
 		}
-	NSLog(@" - found %d matches", (int) [indexesToDelete count]);
+	NSLog(@" - found %d item with a supporting file", (int) [indexesToDelete count]);
 	// iterate down through the indexesToDelete, removing them as we go
 	unsigned long index = [indexesToDelete lastIndex];
 	while (index != NSNotFound)
