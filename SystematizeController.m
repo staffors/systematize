@@ -62,6 +62,7 @@
         {
         NSArray* filesToOpen = [openPanel URLs];
         NSURL* directoryURL = [[filesToOpen[0] retain] autorelease];
+        NSLog(@"chose source directory %@", directoryURL);
         [collection setCurrentDirectory:directoryURL];
 		[self loadFileListForDirectory:directoryURL];
 		[collection filterForMoviesWithThumbnailImages];

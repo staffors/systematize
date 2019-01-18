@@ -1625,8 +1625,8 @@
     //NSLog(@"renamePhotos");
     [self updateGridAndFrame];
     unsigned long index = [selectedIndexes firstIndex];
-    NSString *displayName = [[[[delegate photoView:self objectAtIndex:(unsigned int) index] displayName] retain] autorelease];
-    [editorTextField setStringValue:displayName];
+    //NSString *displayName = [[[[delegate photoView:self objectAtIndex:(unsigned int) index] displayName] retain] autorelease];
+    [editorTextField setStringValue:@""];
     [editorTextField selectText:self];
     [self addSubview:editorTextField];
     NSRect gridRect = [self gridRectForIndex:index];
