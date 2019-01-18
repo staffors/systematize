@@ -364,8 +364,10 @@
         }
 
 
+    NSString* newFilename = [NSString stringWithFormat:@"%@.%@", targetName, [self extension]];
+    NSURL* newPath = [NSURL fileURLWithPath:newFilename relativeToURL:destinationPath];
+    NSLog(@"Moving %@ to %@", [self displayName], newPath);
 
-    NSURL* newPath = [NSURL fileURLWithPath: [NSString stringWithFormat:@"%@/%@.%@", destinationPath, targetName, [self extension]] relativeToURL:nil];
     if ([[self fullPath] isEqualTo:newPath])
         {
         NSLog(@"No need to move %@", [self name]);
@@ -373,8 +375,9 @@
         }
 
     NSFileManager* fileManager = [NSFileManager defaultManager];
+    [fileManager changeCurrentDirectoryPath:[destinationPath path]];
     BOOL isDir;
-    if (! [fileManager fileExistsAtPath:[destinationPath absoluteString] isDirectory:&isDir] && isDir)
+    if (! [fileManager fileExistsAtPath:[destinationPath path] isDirectory:&isDir] && isDir)
         {
         NSLog(@"creating destination directory: %@", destinationPath);
         [fileManager createDirectoryAtURL:destinationPath withIntermediateDirectories:TRUE attributes:nil error:nil];
