@@ -158,37 +158,48 @@
                     }
 
                 NSArray *visualTracks = [self->movie tracksWithMediaCharacteristic:AVMediaCharacteristicVisual];
+                NSLog(@"Found %d visualTracks", (unsigned int) [visualTracks count]);
                 if ([visualTracks count] > 0)
                     {
-                    NSLog(@"Found more than one visualTrack");
                     // Grab the first frame from the asset and display it
+                    NSLog(@     "trying to grab the first frame for the thumbnail");
                     [imageGenerator generateCGImagesAsynchronouslyForTimes:@[[NSValue valueWithCMTime:kCMTimeZero]] completionHandler:
                             ^(CMTime requestedTime, CGImageRef image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error)
                                 {
                                 if (result == AVAssetImageGeneratorSucceeded)
                                     {
-                                    NSLog(@"using iniTWithCGImage");
-                                    self->fastImage = [[NSImage alloc] initWithCGImage:image size:NSZeroSize];
+                                    NSLog(@"using initWithCGImage");
+                                    self->fastImage = [[[NSImage alloc] initWithCGImage:image size:NSZeroSize] retain];
+                                    self->thumbnail = self->fastImage;
                                     }
                                 else
                                     {
                                     NSLog(@"error loading 2x");
                                     self->fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
+                                    self->thumbnail = self->fastImage;
+                                    }
+
+                                if (error)
+                                    {
+                                    NSLog(@"found an error");
+                                    NSAlert *theAlert = [NSAlert alertWithError:error];
+                                    [theAlert runModal];
                                     }
                                 }];
+
                     }
                 else if ([[self->movie tracksWithMediaCharacteristic:AVMediaCharacteristicAudible] count] > 0)
                     {
-                    NSLog(@"audio only 2x");
-                    self->fastImage = [NSImage imageNamed:@"AudioOnly2x"];
+                    NSLog(@"     audio only file so using AudoOnly thumbnail");
+                    fastImage = [NSImage imageNamed:@"AudioOnly2x"];
+                    thumbnail = [self->fastImage retain];
                     }
                 else
                     {
                     NSLog(@"error loading 2x timestwo");
-                    self->fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
+                    fastImage = [NSImage imageNamed:@"ErrorLoading2x"];
+                    thumbnail = [self->fastImage retain];
                     }
-                NSLog(@"retain on fastImage");
-                self->thumbnail = [self->fastImage retain];
                 }];
 
     }
@@ -210,6 +221,7 @@
             }
         }
 
+    NSLog(@"got orientation for %@ of %d", [self name], orientation);
     if (orientation == 6)
         {
         return [self rotateLeft:image];
