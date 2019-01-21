@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35D93E1F79BBA672B364AF25 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D93F2FA2807863BA65AD88 /* AVKit.framework */; };
 		6A76B4990B4D850600C5BD07 /* TSImageAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A76B4970B4D850600C5BD07 /* TSImageAdditions.h */; };
 		6A76B49A0B4D850600C5BD07 /* TSImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A76B4980B4D850600C5BD07 /* TSImageAdditions.m */; };
 		6A76B6D60B4DAE0300C5BD07 /* TSStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A76B6D40B4DAE0300C5BD07 /* TSStringAdditions.h */; };
@@ -43,6 +44,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Systematize_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Systematize_Prefix.pch; sourceTree = "<group>"; };
+		35D93F2FA2807863BA65AD88 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		6A76B4970B4D850600C5BD07 /* TSImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSImageAdditions.h; sourceTree = "<group>"; };
 		6A76B4980B4D850600C5BD07 /* TSImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSImageAdditions.m; sourceTree = "<group>"; };
 		6A76B6D40B4DAE0300C5BD07 /* TSStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSStringAdditions.h; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 				6AE30D920B37595B004A4192 /* ApplicationServices.framework in Frameworks */,
 				6A76B7480B4DB3A800C5BD07 /* QTKit.framework in Frameworks */,
 				6AF43D4C0B603ED8009EA00F /* QuartzCore.framework in Frameworks */,
+				35D93E1F79BBA672B364AF25 /* AVKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +174,7 @@
 			children = (
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+				35D93F2FA2807863BA65AD88 /* AVKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

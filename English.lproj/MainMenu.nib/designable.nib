@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment version="1050" identifier="macosx"/>
+        <plugIn identifier="com.apple.AVKitIBPlugin" version="14460.31"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
-        <plugIn identifier="com.apple.QTKitIBPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -305,7 +304,7 @@
                 <outlet property="fileSizeLabel" destination="282" id="286"/>
                 <outlet property="imageView" destination="289" id="292"/>
                 <outlet property="modificationDateLabel" destination="281" id="285"/>
-                <outlet property="movieView" destination="288" id="291"/>
+                <outlet property="movieView" destination="Ycj-Bt-4dq" id="hW6-aS-7DE"/>
                 <outlet property="photoSizeSlider" destination="234" id="235"/>
                 <outlet property="photoView" destination="229" id="236"/>
                 <outlet property="progressBar" destination="261" id="266"/>
@@ -340,19 +339,18 @@
                             <outlet property="delegate" destination="229" id="271"/>
                         </connections>
                     </textField>
-                    <qtMovieView volumeButtonVisible="YES" stepButtonsVisible="YES" id="288">
-                        <rect key="frame" x="298" y="358" width="77" height="79"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <color key="fillColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                    </qtMovieView>
                     <imageView id="289">
                         <rect key="frame" x="295" y="249" width="62" height="62"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="302"/>
                     </imageView>
+                    <avPlayerView controlsStyle="inline" id="Ycj-Bt-4dq">
+                        <rect key="frame" x="80" y="87" width="274" height="130"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    </avPlayerView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="208" y="821"/>
+            <point key="canvasLocation" x="-145" y="825"/>
         </window>
         <window title="Image Loading Progress" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="259" userLabel="Progress Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
@@ -384,7 +382,7 @@
                     </imageView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-330" y="663"/>
+            <point key="canvasLocation" x="421" y="1195"/>
         </window>
     </objects>
     <resources>

@@ -337,11 +337,11 @@
 	if (ImageType == currentDisplayMode)
         {
         NSLog(@"Swapping out movie view");
-        [[movieView retain] removeFromSuperview];
+        [[imageView retain] removeFromSuperview];
         }
     if (MovieType != currentDisplayMode)
         {
-        NSLog(@"Swapping in image view");
+        NSLog(@"Swapping in movie view");
         NSSize frameSize = [swapView frame].size;
         [movieView setFrame:NSMakeRect(0.0, 0.0, frameSize.width, frameSize.height)];
         [swapView addSubview:movieView];
