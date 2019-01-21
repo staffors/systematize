@@ -886,7 +886,9 @@
             p.y = p.y + imageSize.height / 2;
 
             NSArray* dragItems = @[dragImage];
-            [self beginDraggingSessionWithItems:dragItems event:event source:self];
+            NSLog(@"Starting dragging session");
+            NSDraggingSession* draggingSession = [self beginDraggingSessionWithItems:dragItems event:event source:self];
+            NSLog(@" - started dragging session %@", draggingSession);
             }
 
         [dragImage release];
@@ -1006,18 +1008,6 @@
 
     mouseDown = NO;
     [self setNeedsDisplayInRect:[self visibleRect]];
-    }
-
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal
-    {
-    if (nil != delegate)
-        {
-        return [delegate photoView:self draggingSourceOperationMaskForLocal:isLocal];
-        }
-    else
-        {
-        return NSDragOperationNone;
-        }
     }
 
 - (void)autoscroll
@@ -1556,10 +1546,6 @@
     }
 
 // drag and drop
-- (NSDragOperation) photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal
-    {
-    return NSDragOperationNone;
-    }
 
 - (NSArray *)pasteboardDragTypesForPhotoView:(MUPhotoView *)view
     {
@@ -1574,6 +1560,47 @@
 - (void)photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned)insertionIndex;
     {
     }
+
+
+- (NSDragOperation) draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context;
+    {
+    NSLog(@"draggingSession sourceOperationMaskForDraggingContext");
+    switch(context) {
+        case NSDraggingContextOutsideApplication:
+            return NSDragOperationNone;
+            break;
+
+        case NSDraggingContextWithinApplication:
+        default:
+            return NSDragOperationMove;
+            break;
+        }
+    }
+
+
+
+- (void) draggingSession:(NSDraggingSession *) session endedAtPoint:(NSPoint) screenPoint operation:(NSDragOperation) operation;
+    {
+    NSLog(@"draggingSession ededAtPoint");
+    }
+
+- (void) draggingSession:(NSDraggingSession *) session movedToPoint:(NSPoint) screenPoint;
+    {
+    NSLog(@"draggingSession movedToPoint");
+    }
+
+- (void) draggingSession:(NSDraggingSession *) session willBeginAtPoint:(NSPoint) screenPoint;
+    {
+    NSLog(@"draggingSession willBeginAtPoint");
+    }
+
+- (BOOL) ignoreModifierKeysForDraggingSession:(NSDraggingSession *) session;
+    {
+    return YES;
+    }
+
+
+
 
 // double-click
 - (void)photoView:(MUPhotoView *)view doubleClickOnPhotoAtIndex:(unsigned)index

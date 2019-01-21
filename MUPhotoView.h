@@ -214,9 +214,6 @@
 - (void)photoView:(MUPhotoView *)view didSetSelectionIndexes:(NSIndexSet *)indexes;
 
 // drag and drop
-/** A delegate would use this method to specify whether the view should support drag operations. (i.e. whether the view should allow photos to be dragged out of the view.
-    The semantics are identical to the -[NSDraggingSource draggingSourceOperationmaskForLocal] **/
-- (NSDragOperation)photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal;
 /** The view will call this method at drag time. The delegate should pass an array indicating the types that it will put on the pasteboard for a given set of images. If
     you provide an implementation for -photoView:draggingSourceOperationMaskForLocal: that returns anything other than NO, you should also implement this method and indicate
     which types you will support. **/
@@ -227,6 +224,16 @@
 - (NSData *)photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned)index dataType:(NSString *)type;
 
 - (void) photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned)insertionIndex;
+
+- (NSDragOperation) draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context;
+
+- (void) draggingSession:(NSDraggingSession *) session endedAtPoint:(NSPoint) screenPoint operation:(NSDragOperation) operation;
+
+- (void) draggingSession:(NSDraggingSession *) session movedToPoint:(NSPoint) screenPoint;
+
+- (void) draggingSession:(NSDraggingSession *) session willBeginAtPoint:(NSPoint) screenPoint;
+
+- (BOOL) ignoreModifierKeysForDraggingSession:(NSDraggingSession *) session;
 
 // double-click support
 /** The view will call this delegate method when the user double-clicks on the photo at the specified index. If you do not wish to support any double-click behavior, then you

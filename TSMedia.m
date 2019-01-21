@@ -127,13 +127,6 @@
     [thumbnail addRepresentation:ciImageRep];
 
     CFRelease(sourceRef);
-
-
-    // now load the image and generate scaled versions
-    //sourceImage = [[NSImage alloc] initWithContentsOfFile:[self fullPath]];
-    //fastImage = [[self getOrientedImage:[sourceImage imageScaledToMaxDimension:800]] retain];
-    //thumbnail = [[fastImage imageScaledToMaxDimension:200] retain];
-    //thumbnail = [[self getOrientedImage:[sourceImage imageScaledToMaxDimension:200]] retain];
     fastImage = [thumbnail retain];
     }
 

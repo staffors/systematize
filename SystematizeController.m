@@ -53,7 +53,7 @@
     [openPanel setCanChooseFiles:NO];
     [openPanel setCanChooseDirectories:YES];
     //NSString* picturesDirectoryPath = [@"~/Pictures/Pictures" stringByExpandingTildeInPath];
-    NSString* picturesDirectoryPath = [@"~/Programming/systematize/tests/videos/" stringByExpandingTildeInPath];
+    NSString* picturesDirectoryPath = [@"~/Programming/systematize/tests/photos/" stringByExpandingTildeInPath];
     [openPanel setDirectoryURL:[NSURL fileURLWithPath:picturesDirectoryPath]];
     
     NSModalResponse result = [openPanel runModal];
@@ -526,12 +526,12 @@
 		}
 	}
 
-- (NSArray *)pasteboardDragTypesForPhotoView:(MUPhotoView *)view
+- (NSArray *) pasteboardDragTypesForPhotoView:(MUPhotoView *) view
 	{
     return @[NSPasteboardTypeFileURL];
 	}
 
-- (NSData *)photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned int)index dataType:(NSString *)type
+- (NSData *) photoView:(MUPhotoView *) view pasteboardDataForPhotoAtIndex:(unsigned int) index dataType:(NSString *) type
 	{
 	TSMedia* selectedPhoto = [collection objectAtIndex:index];
 	NSImage* image = [selectedPhoto thumbnail];
