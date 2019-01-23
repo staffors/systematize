@@ -79,7 +79,6 @@
 - (NSIndexSet *) selectionIndexesForPhotoView:(MUPhotoView *)view;
 - (NSIndexSet *) photoView:(MUPhotoView *)view willSetSelectionIndexes:(NSIndexSet *)indexes;
 - (void) photoView:(MUPhotoView *)view didSetSelectionIndexes:(NSIndexSet *)indexes;
-- (unsigned int) photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal;
 - (NSArray *) pasteboardDragTypesForPhotoView:(MUPhotoView *)view;
 - (NSData *) photoView:(MUPhotoView *)view pasteboardDataForPhotoAtIndex:(unsigned int)index dataType:(NSString *)type;
 - (void) photoView:(MUPhotoView *)view didDragSelection:(NSIndexSet *)selectedPhotoIndexes toIndex:(unsigned int)insertionIndex;

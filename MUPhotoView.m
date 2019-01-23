@@ -789,7 +789,6 @@
     if ((xFromStart < 5) && (yFromStart < 5))
         {
         return;
-
         }
     else if (potentialDragDrop && (nil != delegate))
         {
@@ -885,7 +884,10 @@
             p.x = p.x - imageSize.width / 2;
             p.y = p.y + imageSize.height / 2;
 
-            NSArray* dragItems = @[dragImage];
+
+            NSDraggingItem* draggingItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:dragImage] autorelease];
+
+            NSArray* dragItems = @[draggingItem];
             NSLog(@"Starting dragging session");
             NSDraggingSession* draggingSession = [self beginDraggingSessionWithItems:dragItems event:event source:self];
             NSLog(@" - started dragging session %@", draggingSession);
@@ -1024,9 +1026,9 @@
 // Drag Receiving methods
 //
 
-- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
+- (NSDragOperation) draggingEntered:(id <NSDraggingInfo>)sender;
     {
-    //NSLog(@"dragging entered");
+    NSLog(@"dragging entered");
     if ((NSDragOperationPrivate & [sender draggingSourceOperationMask]) == NSDragOperationPrivate)
         {
         // draw insertion point for potential drop
@@ -1047,8 +1049,9 @@
     }
 
 
-- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender;
+- (NSDragOperation) draggingUpdated:(id <NSDraggingInfo>)sender;
     {
+    NSLog(@"dragging updated");
     if ((NSDragOperationPrivate & [sender draggingSourceOperationMask]) == NSDragOperationPrivate)
         {
         NSPoint currentMousePoint = [self convertPoint:[sender draggingLocation] fromView:nil];
@@ -1081,7 +1084,7 @@
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender;
     {
-    //NSLog(@"dragging exited: index = %u", insertionRectIndex);
+    NSLog(@"dragging exited");
     unsigned long lastRectIndex = insertionRectIndex;
     insertionRectIndex = (unsigned long) -1;
     [self setNeedsDisplayInRect:[self gridRectForIndex:lastRectIndex]];
@@ -1090,7 +1093,7 @@
 
 - (void)draggingEnded:(id <NSDraggingInfo>)sender;
     {
-    //NSLog(@"dragging ended: index = %u", insertionRectIndex);
+    NSLog(@"dragging ended");
 //	unsigned lastRectIndex = insertionRectIndex;
 //	insertionRectIndex = -1;
 //	[self setNeedsDisplayInRect:[self gridRectForIndex:lastRectIndex]];		
@@ -1099,14 +1102,14 @@
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender;
     {
-    //NSLog(@"prepare for drag operation: index = %u", insertionRectIndex);
+    NSLog(@"prepare for drag operation");
     return YES;
     }
 
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
     {
-    //NSLog(@"perform drag operation: index = %u", insertionRectIndex);
+    NSLog(@"perform drag operation");
     if (nil != delegate)
         {
         [delegate photoView:self didDragSelection:[self selectionIndexes] toIndex:(unsigned int) insertionRectIndex];
@@ -1117,7 +1120,7 @@
 
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender;
     {
-    //NSLog(@"conclude drag operation");
+    NSLog(@"conclude drag operation");
     if (nil != delegate)
         {
         NSIndexSet *newSelection = [[[NSIndexSet alloc] init] autorelease];
@@ -1581,7 +1584,7 @@
 
 - (void) draggingSession:(NSDraggingSession *) session endedAtPoint:(NSPoint) screenPoint operation:(NSDragOperation) operation;
     {
-    NSLog(@"draggingSession ededAtPoint");
+    NSLog(@"draggingSession endedAtPoint");
     }
 
 - (void) draggingSession:(NSDraggingSession *) session movedToPoint:(NSPoint) screenPoint;

@@ -37,8 +37,8 @@
 	
     collection = [[TSMediaCollection alloc] init];
 	selectedIndexes = [NSIndexSet indexSet];
-    
-	[self chooseSourceDirectory:self];    
+
+	[self chooseSourceDirectory:self];
     [window makeKeyAndOrderFront:self];
 	[window setNextResponder:self];
     }
@@ -493,7 +493,7 @@
 		if (creationDate != nil) {
             creationDateString = [creationDate description];
 		}
-		[creationDateLabel     setStringValue:creationDateString];
+		[creationDateLabel setStringValue:creationDateString];
 
 		NSDate* modificationDate = [[collection objectAtIndex:index] modificationDate];
 		NSString *modificationDateString = @"";
@@ -513,18 +513,6 @@
     return;
 	}
 	
-
-- (unsigned int)photoView:(MUPhotoView *)view draggingSourceOperationMaskForLocal:(BOOL)isLocal
-	{
-	if (isLocal)
-		{
-		return NSDragOperationPrivate;
-		}
-	else
-		{
-		return NSDragOperationNone;
-		}
-	}
 
 - (NSArray *) pasteboardDragTypesForPhotoView:(MUPhotoView *) view
 	{
