@@ -105,12 +105,6 @@
     }
 
 
-- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context
-    {
-    NSLog(@"draggingSession sourceOperationMaskForDraggingContext");
-    return NSDragOperationMove;
-    }
-
 
 
 - (void)dealloc
@@ -889,6 +883,16 @@
 
             NSArray* dragItems = @[draggingItem];
             NSLog(@"Starting dragging session");
+
+            // Hey Shad
+            // okay, the thing to do here (I think) is to track when we've started a dragging session
+            // maybe stash it in an instance variable or something. Then branch up above this somewhere so that we
+            // don't try to create a new drag session if we already have one in operation. We'll need to make sure we
+            // clear out the stashed on on mouse up regardless of what happens to the drag thing.
+            // Hopefully, we'll see log messages from the NSDraggingDestination methods (or the old-style ones that
+            // also exist) and then we can start processing the actuall drag and drop events properly.
+            // However, we're saving that all for another night.
+
             NSDraggingSession* draggingSession = [self beginDraggingSessionWithItems:dragItems event:event source:self];
             NSLog(@" - started dragging session %@", draggingSession);
             }
@@ -1548,7 +1552,7 @@
     return;
     }
 
-// drag and drop
+// NSDraggingSource
 
 - (NSArray *)pasteboardDragTypesForPhotoView:(MUPhotoView *)view
     {
@@ -1601,6 +1605,76 @@
     {
     return YES;
     }
+
+
+
+
+// NSDraggingDestination
+
+- (NSDragOperation) draggingEntered:(id<NSDraggingInfo>) sender;
+    {
+    NSLog(@"draggingEntered:sender");
+    return NSDragOperationMove;
+    }
+
+
+- (BOOL)wantsPeriodicDraggingUpdates;
+    {
+    return YES;
+    }
+
+
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender;
+    {
+    NSLog(@"draggingUpdated:sender");
+    return NSDragOperationMove;
+    }
+
+
+
+- (void)draggingEnded:(id<NSDraggingInfo>)sender;
+    {
+    NSLog(@"draggingEnded:sender");
+
+    }
+
+
+- (void)draggingExited:(id<NSDraggingInfo>)sender;
+    {
+    NSLog(@"dragginExited:sender");
+    }
+
+
+
+
+- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender;
+    {
+    NSLog(@"prepareForDragOperation:sender");
+    return YES;
+    }
+
+
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender;
+    {
+    NSLog(@"performDragOperation:sender");
+    return YES;
+    }
+
+
+
+- (void)concludeDragOperation:(id<NSDraggingInfo>)sender;
+    {
+    NSLog(@"concludeDragOperation:sender");
+    }
+
+
+- (void)updateDraggingItemsForDrag:(id<NSDraggingInfo>)sender;
+    {
+    NSLog(@"updateDraggingItemsForDrag:sender");
+    }
+
 
 
 

@@ -31,7 +31,7 @@
 //!  that are inside another object - it expects NSImage objects. The first method for providing those objects it by binding an array of NSImage objects to the "photosArray" key of the view.
 //!  If this key has been bound, MUPhotoView will fetch all the images it displays from that binding. The second method is to have a delegate object provide the photos. MUPhotoView will only
 //!  call the delegate's photo methods if the photosArray key has not been bound. Please see the MUPhotoViewDelegate category documentation for descriptions of the methods. 
-@interface MUPhotoView : NSView <NSDraggingSource>
+@interface MUPhotoView : NSView <NSDraggingSource, NSDraggingDestination>
     {
     // Please do not access ivars directly - use the accessor methods documented below
     IBOutlet id delegate;
@@ -213,7 +213,7 @@
     mark the specified indexes as selected. (i.e. a subsequent call to -selectionIndexesForPhotoView: should most likely return this set or an identical one. **/
 - (void)photoView:(MUPhotoView *)view didSetSelectionIndexes:(NSIndexSet *)indexes;
 
-// drag and drop
+// NSDraggingSource
 /** The view will call this method at drag time. The delegate should pass an array indicating the types that it will put on the pasteboard for a given set of images. If
     you provide an implementation for -photoView:draggingSourceOperationMaskForLocal: that returns anything other than NO, you should also implement this method and indicate
     which types you will support. **/
@@ -234,6 +234,29 @@
 - (void) draggingSession:(NSDraggingSession *) session willBeginAtPoint:(NSPoint) screenPoint;
 
 - (BOOL) ignoreModifierKeysForDraggingSession:(NSDraggingSession *) session;
+
+
+
+// NSDraggingDestination
+- (NSDragOperation) draggingEntered:(id<NSDraggingInfo>) sender;
+
+
+- (BOOL)wantsPeriodicDraggingUpdates;
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender;
+
+- (void)draggingEnded:(id<NSDraggingInfo>)sender;
+
+- (void)draggingExited:(id<NSDraggingInfo>)sender;
+
+- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender;
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender;
+
+- (void)concludeDragOperation:(id<NSDraggingInfo>)sender;
+
+- (void)updateDraggingItemsForDrag:(id<NSDraggingInfo>)sender;
+
 
 // double-click support
 /** The view will call this delegate method when the user double-clicks on the photo at the specified index. If you do not wish to support any double-click behavior, then you
